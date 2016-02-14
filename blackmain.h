@@ -11,11 +11,12 @@
 #include <QtCore>
 #include <QMessageBox>
 #include "image.h"
+#include "communication.h"
+#include "MultipurposeSocket_ReadyToUse/MultiPropuseSockets.h"
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
-#define server 0
-#define client 1
-
+#define _server 0
+#define _client 1
 namespace Ui {
     class blackmain;
     }
@@ -68,6 +69,7 @@ namespace Ui {
             /*Barra para seleccionar el nombre de usuario*/
             QTextEdit                *barra_username;
             image                    *imagen_inicio;
+            communication             obj_com;
 
     };
 

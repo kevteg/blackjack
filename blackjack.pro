@@ -16,12 +16,12 @@ SOURCES += main.cpp\
         blackmain.cpp \
     image.cpp \
     MultipurposeSocket_ReadyToUse/MultiPropuseSockets.cpp \
-    comunication.cpp
+    communication.cpp
 
 HEADERS  += blackmain.h \
     image.h \
     MultipurposeSocket_ReadyToUse/MultiPropuseSockets.h \
-    comunication.h
+    communication.h
 
 FORMS    += blackmain.ui
 QT       += network

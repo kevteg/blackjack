@@ -51,15 +51,22 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     setConnections();
 }
 void blackmain::setConnections(){
-    connect(opciones_iniciales[client], SIGNAL(clicked(bool)), this, SLOT(clientSelected()));
-    connect(opciones_iniciales[server], SIGNAL(clicked(bool)), this, SLOT(serverSelected()));
+    connect(opciones_iniciales[_client], SIGNAL(clicked(bool)), this, SLOT(clientSelected()));
+    connect(opciones_iniciales[_server], SIGNAL(clicked(bool)), this, SLOT(serverSelected()));
     connect(ui->actionCr_ditos, SIGNAL(triggered(bool)), this, SLOT(about()));
 }
 void blackmain::clientSelected(){
     qDebug() << "Se ha seleccionado cliente";
+    obj_com.init(new Network::Client("127.0.0.1", 6235));
+    (dynamic_cast<Network::Client *>(obj_com.getComobj()))->connectToHost();
+    for (int var = 0; var < 10; ++var) {
+        obj_com.getComobj()->write("HOLA MUNDO");
+    }
+
 }
 void blackmain::serverSelected(){
     qDebug() << "Se ha seleccionado servidor";
+    obj_com.init(new Network::ServerSimple(QHostAddress("127.0.0.1"), 6235));
 }
 void blackmain::about(){
     QMessageBox::about(this, tr("Acerca de Blackjack"),
