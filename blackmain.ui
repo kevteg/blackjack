@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>blackmain</class>
+ <widget class="QMainWindow" name="blackmain">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>blackmain</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QGroupBox" name="ventana_inicial">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>150</y>
+      <width>400</width>
+      <height>260</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>19</y>
+       <width>391</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="layout_ven_inicial"/>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>700</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuPrograma">
+    <property name="title">
+     <string>Programa</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAcerca">
+    <property name="title">
+     <string>Acerca</string>
+    </property>
+    <addaction name="actionCr_ditos"/>
+   </widget>
+   <addaction name="menuPrograma"/>
+   <addaction name="menuAcerca"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionCr_ditos">
+   <property name="text">
+    <string>Créditos</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
