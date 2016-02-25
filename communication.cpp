@@ -3,9 +3,8 @@
 communication::communication(){
 
 }
-void communication::init(Network::Base::Data *object){
-    this->com_object = object;
-}
-Network::Base::Data *communication::getComobj(){
-    return com_object;
-}
+
+void    communication::spreadInfo(QString *datos){}
+void    communication::stopInfoSpeading(){}
+void    communication::setDirMulticast(QString dir_multicast){}
+QString communication::getDirMulticast(){}

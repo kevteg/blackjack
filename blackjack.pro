@@ -15,15 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         blackmain.cpp \
     image.cpp \
-    MultipurposeSocket_ReadyToUse/MultiPropuseSockets.cpp \
-    communication.cpp
+    communication.cpp \
+    servidor.cpp \
+    interfaz_inicial.cpp
 
 HEADERS  += blackmain.h \
     image.h \
-    MultipurposeSocket_ReadyToUse/MultiPropuseSockets.h \
-    communication.h
+    communication.h \
+    servidor.h \
+    interfaz_inicial.h
 
-FORMS    += blackmain.ui
+FORMS    += blackmain.ui \
+    servidor.ui \
+    interfaz_inicial.ui
 QT       += network
 
 RESOURCES += \

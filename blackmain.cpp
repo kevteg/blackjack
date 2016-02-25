@@ -6,9 +6,9 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     this->setWindowTitle("Blackjack");
     this->setFixedSize(this->size());
     //En este layout va la imagen y el edit para el nombre
-    QVBoxLayout *layout_1 = new QVBoxLayout;
+ /*   layout_1 = new QVBoxLayout;
     //En este layout van los botones iniciales de selección
-    QHBoxLayout *layout_2 = new QHBoxLayout;
+    layout_2 = new QHBoxLayout;
     opciones_iniciales = new QToolButton*[n_opc_ini];
     barra_username     = new QTextEdit("Tu nombre");
     barra_username->setFixedSize(200, 25);
@@ -22,10 +22,11 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
         opciones_iniciales[indice] = new QToolButton();
         opciones_iniciales[indice]->setText(!indice?"SERVIDOR":"CLIENTE");
         layout_2->addWidget(opciones_iniciales[indice]);
-    }
-
+    }*/
+    ini = new interfaz_inicial(this);
+    ui->horizontalLayout->addWidget(ini);
     /*CSS*/
-    this->setStyleSheet("QMainWindow{\
+   /* this->setStyleSheet("QMainWindow{\
                             background: rgb(39, 174, 96); \
                          }\
                         QToolButton{\
@@ -47,8 +48,8 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
                                              }");
 
     ui->layout_ven_inicial->addLayout(layout_1);
-    ui->layout_ven_inicial->addLayout(layout_2);
-    setConnections();
+    ui->layout_ven_inicial->addLayout(layout_2);*/
+   // setConnections();
 }
 void blackmain::setConnections(){
     connect(opciones_iniciales[_client], SIGNAL(clicked(bool)), this, SLOT(clientSelected()));
@@ -57,21 +58,30 @@ void blackmain::setConnections(){
 }
 void blackmain::clientSelected(){
     qDebug() << "Se ha seleccionado cliente";
-    obj_com.init(new Network::Client("127.0.0.1", 6235));
-    (dynamic_cast<Network::Client *>(obj_com.getComobj()))->connectToHost();
+   // obj_com.init(new Network::Client("127.0.0.1", 6235));
+   /* (dynamic_cast<Network::Client *>(obj_com.getComobj()))->connectToHost();
     for (int var = 0; var < 10; ++var) {
         obj_com.getComobj()->write("HOLA MUNDO");
-    }
+    }*/
 
 }
 void blackmain::serverSelected(){
     qDebug() << "Se ha seleccionado servidor";
-    obj_com.init(new Network::ServerSimple(QHostAddress("127.0.0.1"), 6235));
+    loadServerInterface();
+    //obj_com.init(new Network::ServerSimple(QHostAddress("127.0.0.1"), 6235));
 }
 void blackmain::about(){
     QMessageBox::about(this, tr("Acerca de Blackjack"),
                            tr("Programado por Estefany Salas y Kevin Hernández"
                               "\nUniversidad Nacional Experimental del Táchira - Comunicaciones I"));
+}
+
+void blackmain::loadServerInterface(){
+
+}
+
+void blackmain::loadClientInterface(){
+
 }
 
 blackmain::~blackmain()

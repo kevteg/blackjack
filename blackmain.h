@@ -10,9 +10,11 @@
 #include <QTextEdit>
 #include <QtCore>
 #include <QMessageBox>
+#include <QVBoxLayout>
+#include "interfaz_inicial.h"
 #include "image.h"
 #include "communication.h"
-#include "MultipurposeSocket_ReadyToUse/MultiPropuseSockets.h"
+//#include "MultipurposeSocket_ReadyToUse/MultiPropuseSockets.h"
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
 #define _server 0
@@ -70,7 +72,10 @@ namespace Ui {
             QTextEdit                *barra_username;
             image                    *imagen_inicio;
             communication             obj_com;
-
+            /*Cosas gráficas*/
+            QVBoxLayout *layout_1;
+            QHBoxLayout *layout_2;
+            interfaz_inicial *ini;
     };
 
 #endif // BLACKMAIN_H
