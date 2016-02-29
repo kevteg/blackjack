@@ -15,7 +15,6 @@ void interfaz_servidor::atras(){
     emit goInitInterface();
 }
 
-interfaz_servidor::~interfaz_servidor()
-{
+interfaz_servidor::~interfaz_servidor(){
     delete ui;
 }

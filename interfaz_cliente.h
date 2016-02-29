@@ -14,6 +14,7 @@ class interfaz_cliente : public QWidget
 public:
     explicit interfaz_cliente(QWidget *parent = 0);
     ~interfaz_cliente();
+    void addinListServer(QString new_server);
 private slots:
     void atras();
 signals:

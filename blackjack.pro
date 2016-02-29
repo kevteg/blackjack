@@ -15,19 +15,30 @@ TEMPLATE = app
 SOURCES += main.cpp\
         blackmain.cpp \
     image.cpp \
-    communication.cpp \
-    servidor.cpp \
-    interfaz_inicial.cpp
+    interfaz_inicio.cpp \
+    interfaz_servidor.cpp \
+    interfaz_cliente.cpp \
+    client_thread.cpp \
+    client.cpp \
+    datasend.cpp \
+    server.cpp \
+    udpcomu.cpp
 
 HEADERS  += blackmain.h \
     image.h \
-    communication.h \
-    servidor.h \
-    interfaz_inicial.h
+    interfaz_inicio.h \
+    interfaz_servidor.h \
+    interfaz_cliente.h \
+    client_thread.h \
+    client.h \
+    datasend.h \
+    server.h \
+    udpcomu.h
 
 FORMS    += blackmain.ui \
-    servidor.ui \
-    interfaz_inicial.ui
+    interfaz_inicio.ui \
+    interfaz_servidor.ui \
+    interfaz_cliente.ui
 QT       += network
 
 RESOURCES += \

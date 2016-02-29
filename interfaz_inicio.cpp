@@ -28,6 +28,10 @@ interfaz_inicio::interfaz_inicio(QWidget *parent) : QWidget(parent), ui(new Ui::
     connect(opciones_iniciales[CLIENTE], SIGNAL(clicked(bool)), this, SLOT(emitCliente()));
 
 }
+QString interfaz_inicio::getNombreUsuario(){
+    return barra_username->toPlainText();
+}
+
 void interfaz_inicio::emitServidor(){
     emit serverSelected();
 }

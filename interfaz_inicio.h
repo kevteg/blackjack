@@ -32,7 +32,9 @@ private:
     QVBoxLayout *layout_1;
     //En este layout van los botones iniciales de selección
     QHBoxLayout *layout_2;
+
 public:
+    QString getNombreUsuario();
     QTextEdit* getBarra();
 private slots:
     void emitServidor();

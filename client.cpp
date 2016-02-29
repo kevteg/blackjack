@@ -19,7 +19,7 @@ void Network::Client::connectToHost()
     }
     else{
         disconnect(&socket,SIGNAL(connected()),this,SLOT(connected())); //Si no se conecto se desconecta la señal
-        qDebug()<<"Error connecting to-> "<<host<<":"<<port;
+        qDebug()<<"Error connecting to: "<<host<<":"<<port;
     }
 }
 

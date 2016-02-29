@@ -9,6 +9,16 @@ interfaz_cliente::interfaz_cliente(QWidget *parent) : QWidget(parent), ui(new Ui
 void interfaz_cliente::atras(){
     emit goInitInterface();
 }
+void interfaz_cliente::addinListServer(QString new_server){
+    bool add = true;
+    for(int i = 0; i < ui->lista_servidores->count() && add; i++){
+        QListWidgetItem* item = ui->lista_servidores->item(i);
+        if(item->text() == new_server)
+            add = false;
+    }
+    if(add)
+        ui->lista_servidores->addItem(new QListWidgetItem(new_server));
+}
 
 interfaz_cliente::~interfaz_cliente()
 {

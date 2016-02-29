@@ -10,11 +10,11 @@
 #include <QTextEdit>
 #include <QtCore>
 #include <QMessageBox>
-#include <QVBoxLayout>
-#include "interfaz_inicial.h"
 #include "image.h"
-#include "communication.h"
-//#include "MultipurposeSocket_ReadyToUse/MultiPropuseSockets.h"
+#include "udpcomu.h"
+#include "interfaz_inicio.h"
+#include "interfaz_servidor.h"
+#include "interfaz_cliente.h"
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
 #define _server 0
@@ -63,19 +63,17 @@ namespace Ui {
              * @brief Se oprimio el about
              */
             void about();
+            void goInitInterface();
+            void processUdpData(QString data);
         private:
 
             Ui::blackmain            *ui;
             /*Botones para escoger modalidades de juego*/
-            QToolButton              **opciones_iniciales;
-            /*Barra para seleccionar el nombre de usuario*/
-            QTextEdit                *barra_username;
-            image                    *imagen_inicio;
-            communication             obj_com;
-            /*Cosas gráficas*/
-            QVBoxLayout *layout_1;
-            QHBoxLayout *layout_2;
-            interfaz_inicial *ini;
+            Network::udpComu         *com_udp;
+            interfaz_inicio          *inter_ini;
+            interfaz_servidor        *inter_ser;
+            interfaz_cliente         *inter_cli;
+
     };
 
 #endif // BLACKMAIN_H
