@@ -7,6 +7,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     inter_ini = new interfaz_inicio(this);
     inter_cli = NULL;
     inter_ser = NULL;
+    cliente   = NULL;
     ui->gridLayout->addWidget(inter_ini);
     /*QSS*/
     this->setStyleSheet("QMainWindow{\
@@ -26,8 +27,12 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
                             background-color: rgb(231, 76, 60); \
                             color: white; \
                         }\
+                        QToolButton:!enabled { \
+                            background-color: rgb(96,125,139); \
+                            color: white; \
+                        }\
                         QLabel{\
-                               color: rgb(236, 240, 241);\
+                               color: rgb(55,71,79);\
                                }\
                         QListWidget::item{\
                                           color:#2c3e50;\
@@ -35,7 +40,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
                                           ;}\
                         ");
     com_udp = new Network::udpComu();
-    connect(com_udp, SIGNAL(incomingData(QString)), this, SLOT(processUdpData(QString)));
+    connect(com_udp, SIGNAL(incomingData(QString, QString, int)), this, SLOT(processUdpData(QString, QString, int)));
     setConnections();
 }
 void blackmain::setConnections(){
@@ -45,12 +50,12 @@ void blackmain::setConnections(){
 }
 void blackmain::clientSelected(){
     if(inter_ini->getBarra()->toPlainText() != ""){
-
             qDebug() << "Blackjack will run as client";
             inter_ini->setVisible(false);
             if(!inter_cli){
                 inter_cli = new interfaz_cliente(this);
-                connect(inter_cli, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
+                connect(inter_cli, SIGNAL(goInitInterface()),           this, SLOT(goInitInterface()));
+                connect(inter_cli, SIGNAL(conexionTcpCliente(QString)), this, SLOT(connectToTcpClient(QString)));
             }else
                 inter_cli->setVisible(true);
             ui->gridLayout->addWidget(inter_cli);
@@ -90,13 +95,16 @@ void blackmain::about(){
                            tr("Programado por Estefany Salas y Kevin Hernández"
                               "\nUniversidad Nacional Experimental del Táchira - Comunicaciones I"));
 }
-void blackmain::processUdpData(QString data){
+void blackmain::processUdpData(QString sender_ip, QString data, int puerto){
     qDebug() << data;
     QStringList pieces = data.split(":");
-    qDebug() << pieces.value(0);
-    if(pieces.value(0) == "P"){
-        inter_cli->addinListServer(pieces.value(2));
-    }
+    QStringList lista  = sender_ip.split(":");
+    if(pieces.value(0) == "P")
+        inter_cli->addinListServer(pieces.value(2), lista.value(lista.count() - 1), puerto);
+}
+void blackmain::connectToTcpClient(QString dir_ip){
+    qDebug() << "I am going to connect to " << dir_ip;
+    //cliente = new Client
 }
 
 blackmain::~blackmain()

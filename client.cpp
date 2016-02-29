@@ -7,8 +7,7 @@ Network::Client::Client(QString host, int port, QObject *parent): QObject(parent
     connected_B = false;
 }
 
-void Network::Client::connectToHost()
-{
+void Network::Client::connectToHost(){
     connect(&socket, SIGNAL(connected()), this, SLOT(connected())); //Necesario para mostrar las alertas al conectarse
     socket.connectToHost(host, port);
     connected_B = socket.waitForConnected(3000);
@@ -23,14 +22,12 @@ void Network::Client::connectToHost()
     }
 }
 
-void Network::Client::connected()
-{
-    qDebug()<<"Conected to "<<host<<":"<<port;
+void Network::Client::connected(){
+    qDebug()<<"Conected to " << host << ":" << port;
 }
 
-void Network::Client::disconnected()
-{
-     qDebug()<<"Disconnected to "<<host<<":"<<port;
+void Network::Client::disconnected(){
+     qDebug()<<"Disconnected to " << host << ":" << port;
 }
 bool Network::Client::isConnected()   {
     return connected_B;

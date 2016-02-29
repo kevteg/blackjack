@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     client.cpp \
     datasend.cpp \
     server.cpp \
-    udpcomu.cpp
+    udpcomu.cpp \
+    paneljugador.cpp \
+    panel_juego.cpp
 
 HEADERS  += blackmain.h \
     image.h \
@@ -33,12 +35,16 @@ HEADERS  += blackmain.h \
     client.h \
     datasend.h \
     server.h \
-    udpcomu.h
+    udpcomu.h \
+    paneljugador.h \
+    panel_juego.h
 
 FORMS    += blackmain.ui \
     interfaz_inicio.ui \
     interfaz_servidor.ui \
-    interfaz_cliente.ui
+    interfaz_cliente.ui \
+    paneljugador.ui \
+    panel_juego.ui
 QT       += network
 
 RESOURCES += \

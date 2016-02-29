@@ -4,7 +4,8 @@
 #include <QThread>
 #include <QUdpSocket>
 #include <QMutex>
-#define port 7777
+#include <QTimer>
+#define _port 7777
 /**
   Autores:
   Estefany Salas
@@ -34,21 +35,21 @@ namespace Network{
             void setManualyBr(bool);
             void listenBroadcast();
             void stopListeningBroadcast();
+            void limpiarLista();
         signals:
             void broadcast(QString);
-            void incomingData(QString);
+            void incomingData(QString, QString, int);
         public slots:
             /*Ready read y disconnected se usan cuando se escuchan a los servidores*/
             void readyRead();
             void disconnected();
             void enviaBroadcast(QString data);
         private:
-            QString     dir_multicast;
+            QString      dir_multicast;
             udpComu     *ins_hilo;
             QUdpSocket  *socket;
             QThread     *hilo_broadcast;
-            bool        enviando_broadcast;
-            QMutex      mutex;
+            bool         enviando_broadcast;
     };
 }
 #endif // COMUNICATION_H

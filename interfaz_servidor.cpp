@@ -3,8 +3,6 @@
 
 interfaz_servidor::interfaz_servidor(QWidget *parent) : QWidget(parent), ui(new Ui::interfaz_servidor){
     ui->setupUi(this);
-    //ui->label->
-//    ui->label->setWindow
     ui->progressBar->setValue(ui->progressBar->minimum());
     ui->ir_atras->setIcon(QIcon(QPixmap(":/imágenes/Imágenes/back.png")));
     ui->comenzar_partida->setEnabled(false);

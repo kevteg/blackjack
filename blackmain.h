@@ -15,6 +15,8 @@
 #include "interfaz_inicio.h"
 #include "interfaz_servidor.h"
 #include "interfaz_cliente.h"
+#include "server.h"
+#include "client.h"
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
 #define _server 0
@@ -64,7 +66,8 @@ namespace Ui {
              */
             void about();
             void goInitInterface();
-            void processUdpData(QString data);
+            void processUdpData(QString sender_ip, QString data, int puerto);
+            void connectToTcpClient(QString dir_ip);
         private:
 
             Ui::blackmain            *ui;
@@ -73,6 +76,7 @@ namespace Ui {
             interfaz_inicio          *inter_ini;
             interfaz_servidor        *inter_ser;
             interfaz_cliente         *inter_cli;
+            Network::Client          *cliente;
 
     };
 
