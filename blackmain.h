@@ -10,6 +10,7 @@
 #include <QTextEdit>
 #include <QtCore>
 #include <QMessageBox>
+#include <QNetworkAddressEntry>
 #include "image.h"
 #include "udpcomu.h"
 #include "interfaz_inicio.h"
@@ -19,6 +20,7 @@
 #include "client.h"
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
+#define tcp_port 2323
 #define _server 0
 #define _client 1
 namespace Ui {
@@ -77,6 +79,8 @@ namespace Ui {
             interfaz_servidor        *inter_ser;
             interfaz_cliente         *inter_cli;
             Network::Client          *cliente;
+            Network::server          *servidor;
+            QString                   local_ip;
 
     };
 

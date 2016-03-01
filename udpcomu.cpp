@@ -1,7 +1,8 @@
 #include "udpcomu.h"
 
 Network::udpComu::udpComu(){
-    enviando_broadcast = false;
+    enviando_broadcast  = false;
+    listening_broadcast = false;
 }
 
 void Network::udpComu::startBroadcast(QString datos){
@@ -17,15 +18,20 @@ void Network::udpComu::startBroadcast(QString datos){
 }
 
 void Network::udpComu::listenBroadcast(){
-     qDebug() << "Listening to servers broadcast in port: " << _port;
-     socket = new QUdpSocket(this);
-     connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
-     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-     socket->bind(_port);
+    if(!listening_broadcast){
+         qDebug() << "Listening to servers broadcast in port: " << _port;
+         listening_broadcast = true;
+         socket = new QUdpSocket(this);
+         connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
+         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+         socket->bind(_port);
+    }
 }
 
 void Network::udpComu::stopListeningBroadcast(){
-    socket->deleteLater();
+    if(listening_broadcast)
+        socket->deleteLater();
+    listening_broadcast = false;
 }
 
 void Network::udpComu::enviaBroadcast(QString datos){
@@ -73,10 +79,6 @@ void Network::udpComu::disconnected(){
 
 void Network::udpComu::setDirMulticast(QString dir_multicast){
     this->dir_multicast = dir_multicast;
-}
-
-void Network::udpComu::limpiarLista(){
-
 }
 
 bool Network::udpComu::enviandoBroadcast(){

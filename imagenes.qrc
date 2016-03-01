@@ -2,5 +2,6 @@
     <qresource prefix="/imágenes">
         <file>Imágenes/bj.jpg</file>
         <file>Imágenes/back.png</file>
+        <file>Imágenes/icon.png</file>
     </qresource>
 </RCC>

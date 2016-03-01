@@ -35,7 +35,6 @@ namespace Network{
             void setManualyBr(bool);
             void listenBroadcast();
             void stopListeningBroadcast();
-            void limpiarLista();
         signals:
             void broadcast(QString);
             void incomingData(QString, QString, int);
@@ -50,6 +49,7 @@ namespace Network{
             QUdpSocket  *socket;
             QThread     *hilo_broadcast;
             bool         enviando_broadcast;
+            bool         listening_broadcast;
     };
 }
 #endif // COMUNICATION_H

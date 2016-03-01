@@ -8,7 +8,14 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     inter_cli = NULL;
     inter_ser = NULL;
     cliente   = NULL;
+    servidor  = NULL;
     ui->gridLayout->addWidget(inter_ini);
+    /*Encontrar la ip del equipo*/
+    QList<QHostAddress> dir = QNetworkInterface::allAddresses();
+    foreach (QHostAddress item, dir)
+        if(item.protocol() == QAbstractSocket::IPv4Protocol && item != QHostAddress::LocalHost && item != QHostAddress::LocalHostIPv6)
+            local_ip = item.toString();
+
     /*QSS*/
     this->setStyleSheet("QMainWindow{\
                             background: rgb(39, 174, 96); \
@@ -54,6 +61,7 @@ void blackmain::clientSelected(){
             inter_ini->setVisible(false);
             if(!inter_cli){
                 inter_cli = new interfaz_cliente(this);
+                cliente = new Network::Client();
                 connect(inter_cli, SIGNAL(goInitInterface()),           this, SLOT(goInitInterface()));
                 connect(inter_cli, SIGNAL(conexionTcpCliente(QString)), this, SLOT(connectToTcpClient(QString)));
             }else
@@ -66,13 +74,16 @@ void blackmain::clientSelected(){
 }
 void blackmain::goInitInterface(){
     inter_ini->setVisible(true);
-    if(inter_ser)
+    if(inter_ser){
         inter_ser->setVisible(false);
-    if(inter_cli)
+        servidor->stopServer();
+    }if(inter_cli){
         inter_cli->setVisible(false);
+        cliente->closeConnection();
+    }
     if(com_udp->enviandoBroadcast())
         com_udp->detenerBroadcast();
-    else
+    else if(cliente && cliente->isConnected())
         com_udp->stopListeningBroadcast();
 }
 
@@ -82,6 +93,8 @@ void blackmain::serverSelected(){
         inter_ini->setVisible(false);
         if(!inter_ser){
             inter_ser = new interfaz_servidor(this);
+            servidor = new Network::server;
+            servidor->startServer(QHostAddress(local_ip), tcp_port);
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
         }else
             inter_ser->setVisible(true);
@@ -103,11 +116,12 @@ void blackmain::processUdpData(QString sender_ip, QString data, int puerto){
         inter_cli->addinListServer(pieces.value(2), lista.value(lista.count() - 1), puerto);
 }
 void blackmain::connectToTcpClient(QString dir_ip){
+    com_udp->stopListeningBroadcast();
     qDebug() << "I am going to connect to " << dir_ip;
-    //cliente = new Client
+    ui->statusBar->showMessage(tr("Conectandose al servidor seleccionado"));
+    cliente->connectToHost(dir_ip, tcp_port);
 }
 
-blackmain::~blackmain()
-{
+blackmain::~blackmain(){
     delete ui;
 }

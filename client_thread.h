@@ -25,6 +25,7 @@ namespace Network
          * @brief Cuando hay información disponible del cliente
          */
         void readyRead();
+        void closeConnection();
     signals:
         /**
          * @brief esto se emite al servidor si hay un error de algún tipo,

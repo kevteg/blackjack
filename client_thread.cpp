@@ -24,6 +24,12 @@ void Network::client_thread::disconnected(){
     socket->deleteLater();
     exit(0);
 }
+
+void Network::client_thread::closeConnection(){
+    socket->deleteLater();
+    exit(0);
+}
+
 void Network::client_thread::readyRead(){
     QString s(socket->readAll());
     qDebug() << "Received from client " << socket->socketDescriptor() << ": " << s;
