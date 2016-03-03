@@ -18,6 +18,8 @@
 #include "interfaz_cliente.h"
 #include "server.h"
 #include "client.h"
+#include "panel_juego.h"
+
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
 #define tcp_port 2323
@@ -81,6 +83,7 @@ namespace Ui {
             Network::Client          *cliente;
             Network::server          *servidor;
             QString                   local_ip;
+            panel_juego               *panel_principal;
 
     };
 

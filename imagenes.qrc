@@ -3,5 +3,57 @@
         <file>Imágenes/bj.jpg</file>
         <file>Imágenes/back.png</file>
         <file>Imágenes/icon.png</file>
+        <file>Imágenes/Baraja/2c.png</file>
+        <file>Imágenes/Baraja/2d.png</file>
+        <file>Imágenes/Baraja/2p.png</file>
+        <file>Imágenes/Baraja/2t.png</file>
+        <file>Imágenes/Baraja/3c.png</file>
+        <file>Imágenes/Baraja/3d.png</file>
+        <file>Imágenes/Baraja/3p.png</file>
+        <file>Imágenes/Baraja/3t.png</file>
+        <file>Imágenes/Baraja/4c.png</file>
+        <file>Imágenes/Baraja/4d.png</file>
+        <file>Imágenes/Baraja/4p.png</file>
+        <file>Imágenes/Baraja/4t.png</file>
+        <file>Imágenes/Baraja/5c.png</file>
+        <file>Imágenes/Baraja/5d.png</file>
+        <file>Imágenes/Baraja/5p.png</file>
+        <file>Imágenes/Baraja/5t.png</file>
+        <file>Imágenes/Baraja/6c.png</file>
+        <file>Imágenes/Baraja/6d.png</file>
+        <file>Imágenes/Baraja/6p.png</file>
+        <file>Imágenes/Baraja/6t.png</file>
+        <file>Imágenes/Baraja/7c.png</file>
+        <file>Imágenes/Baraja/7d.png</file>
+        <file>Imágenes/Baraja/7p.png</file>
+        <file>Imágenes/Baraja/7t.png</file>
+        <file>Imágenes/Baraja/8c.png</file>
+        <file>Imágenes/Baraja/8d.png</file>
+        <file>Imágenes/Baraja/8p.png</file>
+        <file>Imágenes/Baraja/8t.png</file>
+        <file>Imágenes/Baraja/9c.png</file>
+        <file>Imágenes/Baraja/9d.png</file>
+        <file>Imágenes/Baraja/9p.png</file>
+        <file>Imágenes/Baraja/9t.png</file>
+        <file>Imágenes/Baraja/10c.png</file>
+        <file>Imágenes/Baraja/10d.png</file>
+        <file>Imágenes/Baraja/10p.png</file>
+        <file>Imágenes/Baraja/10t.png</file>
+        <file>Imágenes/Baraja/Ac.png</file>
+        <file>Imágenes/Baraja/Ad.png</file>
+        <file>Imágenes/Baraja/Ap.png</file>
+        <file>Imágenes/Baraja/At.png</file>
+        <file>Imágenes/Baraja/Jc.png</file>
+        <file>Imágenes/Baraja/Jd.png</file>
+        <file>Imágenes/Baraja/Jp.png</file>
+        <file>Imágenes/Baraja/Jt.png</file>
+        <file>Imágenes/Baraja/Kc.png</file>
+        <file>Imágenes/Baraja/Kd.png</file>
+        <file>Imágenes/Baraja/Kp.png</file>
+        <file>Imágenes/Baraja/Kt.png</file>
+        <file>Imágenes/Baraja/Qc.png</file>
+        <file>Imágenes/Baraja/Qd.png</file>
+        <file>Imágenes/Baraja/Qp.png</file>
+        <file>Imágenes/Baraja/Qt.png</file>
     </qresource>
 </RCC>

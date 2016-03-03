@@ -10,6 +10,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     cliente   = NULL;
     servidor  = NULL;
     ui->gridLayout->addWidget(inter_ini);
+    panel_principal = new panel_juego();
     /*Encontrar la ip del equipo*/
     QList<QHostAddress> dir = QNetworkInterface::allAddresses();
     foreach (QHostAddress item, dir)
@@ -48,6 +49,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
                         ");
     com_udp = new Network::udpComu();
     connect(com_udp, SIGNAL(incomingData(QString, QString, int)), this, SLOT(processUdpData(QString, QString, int)));
+    connect(panel_principal, SIGNAL(returnToInit()), this, SLOT(goInitInterface()));
     setConnections();
 }
 void blackmain::setConnections(){
@@ -85,6 +87,8 @@ void blackmain::goInitInterface(){
         com_udp->detenerBroadcast();
     else if(cliente && cliente->isConnected())
         com_udp->stopListeningBroadcast();
+    if(panel_principal->isVisible())
+        panel_principal->setVisible(false);
 }
 
 void blackmain::serverSelected(){
@@ -120,6 +124,9 @@ void blackmain::connectToTcpClient(QString dir_ip){
     qDebug() << "I am going to connect to " << dir_ip;
     ui->statusBar->showMessage(tr("Conectandose al servidor seleccionado"));
     cliente->connectToHost(dir_ip, tcp_port);
+    inter_cli->setVisible(false);
+    ui->gridLayout->addWidget(panel_principal);
+    panel_principal->setVisible(true);
 }
 
 blackmain::~blackmain(){
