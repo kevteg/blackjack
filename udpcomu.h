@@ -5,7 +5,7 @@
 #include <QUdpSocket>
 #include <QMutex>
 #include <QTimer>
-#define _port 7777
+#define _port 20050
 /**
   Autores:
   Estefany Salas
@@ -37,12 +37,13 @@ namespace Network{
             void stopListeningBroadcast();
         signals:
             void broadcast(QString);
-            void incomingData(QString, QString, int);
+            void incomingData(QString, QString);
         public slots:
             /*Ready read y disconnected se usan cuando se escuchan a los servidores*/
             void readyRead();
             void disconnected();
-            void enviaBroadcast(QString data);
+            void enviaUnicoBroadcast(QString data);
+            void enviaMultipleBroadcast(QString data); //Con este método de aqui se crea un hilo que se encargue
         private:
             QString      dir_multicast;
             udpComu     *ins_hilo;

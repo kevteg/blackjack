@@ -11,6 +11,7 @@
 #include <QtCore>
 #include <QMessageBox>
 #include <QNetworkAddressEntry>
+#include <QTimer>
 #include "image.h"
 #include "udpcomu.h"
 #include "interfaz_inicio.h"
@@ -19,10 +20,11 @@
 #include "server.h"
 #include "client.h"
 #include "panel_juego.h"
+#include "protocolo.h"
 
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
-#define tcp_port 2323
+#define tcp_port 20060
 #define _server 0
 #define _client 1
 namespace Ui {
@@ -56,6 +58,7 @@ namespace Ui {
              * @brief Carga la interfaz de usuario para servidor
              */
             void loadServerInterface();
+            void loadGameInterface();
         private slots:
             /**
              * @brief Evento de selección de cliente
@@ -70,7 +73,10 @@ namespace Ui {
              */
             void about();
             void goInitInterface();
-            void processUdpData(QString sender_ip, QString data, int puerto);
+            void processUdpData(QString sender_ip, QString data);
+            void countServerTime();
+            void noClients();
+            QJsonObject writeServerInfo();
             void connectToTcpClient(QString dir_ip);
         private:
 
@@ -83,7 +89,10 @@ namespace Ui {
             Network::Client          *cliente;
             Network::server          *servidor;
             QString                   local_ip;
-            panel_juego               *panel_principal;
+            panel_juego              *panel_principal;
+            int                       conteo_server;
+            int                       conteo_clientes;
+            QTimer                   *timer;
 
     };
 

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QString>
+#include "protocolo.h"
 namespace Ui {
 class interfaz_servidor;
 }
@@ -14,13 +15,15 @@ class interfaz_servidor : public QWidget
 public:
     explicit interfaz_servidor(QWidget *parent = 0);
     ~interfaz_servidor();
-
+    void updateTime(int time);
+    int getTime();
 private slots:
     void atras();
 signals:
     void goInitInterface();
 private:
     Ui::interfaz_servidor *ui;
+    int time;
 };
 
 #endif // INTERFAZ_SERVIDOR_H

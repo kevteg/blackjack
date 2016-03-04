@@ -34,7 +34,18 @@ void Network::udpComu::stopListeningBroadcast(){
     listening_broadcast = false;
 }
 
-void Network::udpComu::enviaBroadcast(QString datos){
+void Network::udpComu::enviaUnicoBroadcast(QString datos){
+    socket = new QUdpSocket(this);
+    connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
+    connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+    socket->connectToHost(QHostAddress::Broadcast, _port);
+    QByteArray data;
+    data.append(datos);
+    qDebug() << "Sending: " << datos;
+    socket->writeDatagram(data, QHostAddress::Broadcast, _port);
+}
+void Network::udpComu::enviaMultipleBroadcast(QString datos){
+    /*Para correr este broadcast es necesario correr el startbroadcast que crea un hilo para este metodo*/
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
@@ -43,7 +54,6 @@ void Network::udpComu::enviaBroadcast(QString datos){
         QByteArray data;
         data.append(datos);
         qDebug() << "Sending: " << datos;
-        QThread::msleep(1000);
         socket->writeDatagram(data, QHostAddress::Broadcast, _port);
     }
 }
@@ -63,7 +73,7 @@ void Network::udpComu::readyRead(){
     quint16 puerto;
     socket->readDatagram(data.data(), data.size(), &sender, &puerto);
     qDebug() << "Message ("<< sender.toString() << ":" << puerto <<"): " << data;
-    emit incomingData(sender.toString(), data, puerto);
+    emit incomingData(sender.toString(), data);
 }
 
 void Network::udpComu::setManualyBr(bool var){
