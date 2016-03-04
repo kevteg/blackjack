@@ -120,22 +120,11 @@ void blackmain::serverSelected(){
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
         }else
             inter_ser->setVisible(true);
+
         ui->gridLayout->addWidget(inter_ser);
-        //QJsonDocument trama(writeServerInfo());
-        //com_udp->startBroadcast(trama.toJson());
         timer->start(1000);
     }else
         ui->statusBar->showMessage(tr("¡Selecciona tu nombre como sevidor!"));
-}
-
-QJsonObject blackmain::writeServerInfo(){
-    /*Información para el broadcast*/
-    QJsonObject info_s;
-    info_s["id"]       = protocolo::cod_presentacion;
-    info_s["nombre"]   = inter_ini->getNombreUsuario();
-    info_s["tiempo"]   = conteo_server;
-    info_s["espacios"] = conteo_clientes;
-    return info_s;
 }
 
 void blackmain::about(){
@@ -147,16 +136,21 @@ void blackmain::about(){
 void blackmain::processUdpData(QString sender_ip, QString data){
     QJsonDocument trama = QJsonDocument::fromJson(data.toUtf8());
     QStringList lista  = sender_ip.split(":");
-    if(trama.object()["id"].toInt() == protocolo::cod_presentacion)
+    /*También hacer una a través del protocolo*/
+    if(trama.object()["codigo"].toInt() == protocolo::cod_presentacion)
         inter_cli->addinListServer(trama.object()["nombre"].toString(), lista.value(lista.count() - 1), trama.object()["tiempo"].toInt(),  trama.object()["espacios"].toInt());
 }
 void blackmain::connectToTcpClient(QString dir_ip){
     com_udp->stopListeningBroadcast();
     qDebug() << "I am going to connect to " << dir_ip;
     ui->statusBar->showMessage(tr("Conectandose al servidor seleccionado"));
-    cliente->connectToHost(dir_ip, tcp_port);
+    if(cliente->connectToHost(dir_ip, tcp_port)){
+
+        //cliente->write();
+    }
     loadGameInterface();
 }
+
 void blackmain::noClients(){
     QMessageBox::about(this, tr("No se conecto nadie :'("),
                            tr("No se conectó ningún cliente. \n ¿Probamos de nuevo?"));
@@ -164,7 +158,7 @@ void blackmain::noClients(){
 
 void blackmain::loadGameInterface(){
     bool open = true;
-    if(inter_ser->isVisible() && !conteo_clientes){
+    if(inter_ser && inter_ser->isVisible() && !conteo_clientes){
          qDebug() << "Time up: No clients connected :'(";
          goInitInterface();
          open = false;
@@ -174,7 +168,6 @@ void blackmain::loadGameInterface(){
         inter_ser->setVisible(false);
     else
         open = false;
-
     if(open){
         ui->gridLayout->addWidget(panel_principal);
         panel_principal->setVisible(true);
@@ -188,10 +181,12 @@ void blackmain::countServerTime(){
     else{
         conteo_server++;
         this->inter_ser->updateTime(conteo_server);
-        QJsonDocument trama(writeServerInfo());
-        com_udp->enviaUnicoBroadcast(trama.toJson());
+        QVector <QVariant> var;
+        var.append(inter_ini->getNombreUsuario());
+        var.append(conteo_server);
+        var.append(conteo_clientes);
+        com_udp->enviaUnicoBroadcast(protocolo::protocolJson(protocolo::cod_presentacion, &var));
     }
-
 }
 
 blackmain::~blackmain(){

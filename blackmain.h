@@ -76,7 +76,6 @@ namespace Ui {
             void processUdpData(QString sender_ip, QString data);
             void countServerTime();
             void noClients();
-            QJsonObject writeServerInfo();
             void connectToTcpClient(QString dir_ip);
         private:
 
