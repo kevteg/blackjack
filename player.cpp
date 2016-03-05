@@ -2,7 +2,7 @@
 
 player::player()
 {
-
+    puntos=0;
 }
 QString player::getName(){
     return name;
