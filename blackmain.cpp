@@ -203,8 +203,9 @@ void blackmain::setSocketIdToClient(int s_id){
     qDebug() << "SOCKET SAVED: " << s_id;
 }
 
-//TODO emit cuando hay nuevo cliente para saber cual es el socket descriptor IMPORTANTE
+
 void blackmain::messagesFromCLient(int socket_des, QString data){
+    //Aqui va todo lo que el cliente le dice al servidor
     QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
     switch (vector_datos->at(0).toInt()) {
     case protocolo::cod_solicitud:
@@ -220,13 +221,10 @@ void blackmain::messagesFromCLient(int socket_des, QString data){
             servidor->sendToClient(socket_des, protocolo::generateJson(protocolo::cod_aceptacion, &respuesta));
             inter_ser->addClientToList(*jugadores.back());
         }
-
         break;
     default:
         break;
     }
-
-
 }
 
 blackmain::~blackmain(){

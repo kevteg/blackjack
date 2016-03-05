@@ -6,6 +6,7 @@
 #include <QListWidgetItem>
 #include <QVector>
 #include <QString>
+#include <QTimer>
 #include "serveritem.h"
 
 namespace Ui {
@@ -24,6 +25,7 @@ public:
 private slots:
     void atras();
     void verifyConnectedServer(QString datos_servidor);
+    void resetServerList();
 signals:
     void conexionTcpCliente(QString dir_ip);
     void goInitInterface();
@@ -31,6 +33,7 @@ private:
     Ui::interfaz_cliente *ui;
     int                   count_servers;
     QVector <serverItem*> servidores;
+    QTimer               *timer;
 };
 
 #endif // INTERFAZ_CLIENTE_H
