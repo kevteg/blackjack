@@ -136,12 +136,13 @@ void blackmain::about(){
 }
 
 void blackmain::processUdpData(QString sender_ip, QString data){
-    QJsonDocument trama = QJsonDocument::fromJson(data.toUtf8());
+    QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
+    //QJsonDocument trama = QJsonDocument::fromJson(data.toUtf8());
     QStringList lista  = sender_ip.split(":");
     /*También hacer una a través del protocolo*/
-
-    if(trama.object()["codigo"].toInt() == protocolo::cod_saludo)
-        inter_cli->addinListServer(trama.object()["nombre"].toString(), lista.value(lista.count() - 1), trama.object()["tiempo"].toInt(),  trama.object()["espacios"].toInt());
+    qDebug() << "Datos" << vector_datos->at(0).toInt() << " " << vector_datos->at(1).toString();
+    if(vector_datos->at(0).toInt() == protocolo::cod_saludo)
+        inter_cli->addinListServer(vector_datos->at(1).toString(), lista.value(lista.count() - 1), vector_datos->at(2).toInt(),  vector_datos->at(3).toInt());
 }
 void blackmain::connectToTcpClient(QString dir_ip){
     com_udp->stopListeningBroadcast();
@@ -189,7 +190,7 @@ void blackmain::countServerTime(){
         var.append(inter_ini->getNombreUsuario());
         var.append(conteo_server);
         var.append(conteo_clientes);
-        com_udp->enviaUnicoBroadcast(protocolo::protocolJson(protocolo::cod_saludo, &var));
+        com_udp->enviaUnicoBroadcast(protocolo::generateJson(protocolo::cod_saludo, &var));
     }
 }
 void blackmain::setSocketIdToClient(int s_id){

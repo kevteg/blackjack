@@ -15,6 +15,7 @@ public:
     void    setSocketDes(int);
     int     getSocketDes();
 
+
 signals:
 
 public slots:

@@ -84,19 +84,17 @@ public:
             trama = QJsonDocument(info_s);
             return trama.toJson();
         }
-    static QVector<QVariant> JsonToVector(QByteArray datos){
-        QJsonDocument trama = QJsonDocument::fromJson(data);
-        QVector<QVariant> vector_datos;
-         switch (trama.object()["codigo"]) {
+    static QVector<QVariant>* JsonToVector(QByteArray datos){
+        QJsonDocument trama = QJsonDocument::fromJson(datos);
+        QVector<QVariant> *vector_datos = new QVector<QVariant>;
+         switch (trama.object()["codigo"].toInt()) {
          case cod_saludo:
-             info_s["codigo"]   = cod_saludo;
-             info_s["nombre"]   = info->at(0).toString();
-             info_s["tiempo"]   = info->at(1).toInt();
-             info_s["espacios"] = info->at(2).toInt();
+             vector_datos->append(trama.object()["nombre"].toString());
+             vector_datos->append(trama.object()["tiempo"].toInt());
+             vector_datos->append(trama.object()["espacios"].toInt());
              break;
          case cod_solicitud:
-             info_s["codigo"] = cod_solicitud;
-             info_s["nombre"] = info->at(0).toString();
+             vector_datos->append(trama.object()["nombre"].toString());
              break;
          case cod_aceptacion:
 
@@ -128,8 +126,7 @@ public:
          default:
              break;
          }
-         trama = QJsonDocument(info_s);
-         return trama.toJson();
+         return vector_datos;
     }
 };
 
