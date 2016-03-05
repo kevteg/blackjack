@@ -7,8 +7,10 @@ void Network::Base::DataSend::set_socket_DS(QTcpSocket *socket)
 {
     this->socket = socket;
 }
-void Network::Base::DataSend::write(QString s)
+void Network::Base::DataSend::write(QByteArray data)
 {
-    socket->write(s.toUtf8());
-    socket->flush();
+    if(socket->state() == QAbstractSocket::ConnectedState){
+        socket->write(data);
+        socket->flush();
+    }
 }

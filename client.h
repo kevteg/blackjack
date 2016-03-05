@@ -57,6 +57,9 @@ namespace Network
         //void	bytesWritten(qint64 bytes);
  public:
         void closeConnection();
+        void enviar(QByteArray data);
+ signals:
+        void serverOut();
  private:
         QTcpSocket *socket;
         QString     host;

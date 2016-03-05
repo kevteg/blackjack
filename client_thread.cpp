@@ -33,5 +33,6 @@ void Network::client_thread::closeConnection(){
 void Network::client_thread::readyRead(){
     QString s(socket->readAll());
     qDebug() << "Received from client " << socket->socketDescriptor() << ": " << s;
+    emit messageFromClient(this->socket_des, s);
 }
 

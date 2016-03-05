@@ -80,6 +80,7 @@ void blackmain::clientSelected(){
                 cliente = new Network::Client();
                 connect(inter_cli, SIGNAL(goInitInterface()),           this, SLOT(goInitInterface()));
                 connect(inter_cli, SIGNAL(conexionTcpCliente(QString)), this, SLOT(connectToTcpClient(QString)));
+                connect(cliente, SIGNAL(serverOut()), this, SLOT(goInitInterface()));
             }else
                 inter_cli->setVisible(true);
             ui->gridLayout->addWidget(inter_cli);
@@ -118,9 +119,10 @@ void blackmain::serverSelected(){
             servidor = new Network::server;
             servidor->startServer(QHostAddress(local_ip), tcp_port);
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
+            connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(messagesFromCLient(int, QString)));
+            connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));
         }else
             inter_ser->setVisible(true);
-
         ui->gridLayout->addWidget(inter_ser);
         timer->start(1000);
     }else
@@ -145,8 +147,9 @@ void blackmain::connectToTcpClient(QString dir_ip){
     qDebug() << "I am going to connect to " << dir_ip;
     ui->statusBar->showMessage(tr("Conectandose al servidor seleccionado"));
     if(cliente->connectToHost(dir_ip, tcp_port)){
-
-        //cliente->write();
+        QVector <QVariant> var;
+        var.append(inter_ini->getNombreUsuario());
+        cliente->write(protocolo::protocolJson(protocolo::cod_solicitud, &var));
     }
     loadGameInterface();
 }
@@ -187,6 +190,17 @@ void blackmain::countServerTime(){
         var.append(conteo_clientes);
         com_udp->enviaUnicoBroadcast(protocolo::protocolJson(protocolo::cod_presentacion, &var));
     }
+}
+void blackmain::setSocketIdToClient(int s_id){
+    //aqui se asocia el id del cada socket al cliente para saber de quien es cuando envie su solicitud
+    //Entonces aqui se van inicializando los jugadores
+    //Crear una clase de jugador que guarde esta data
+    qDebug() << "SOCKET SAVED: " << s_id;
+}
+
+//TODO emit cuando hay nuevo cliente para saber cual es el socket descriptor IMPORTANTE
+void blackmain::messagesFromCLient(int socket_des, QString data){
+    qDebug() << "Game received message from " << socket_des << ": " << data;
 }
 
 blackmain::~blackmain(){

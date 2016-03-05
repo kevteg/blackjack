@@ -30,7 +30,7 @@ namespace Network
                  * @brief Escribir a través del socket el mensaje s
                  * @param s
                  */
-                void write(QString s);
+                void write(QByteArray data);
         };
     }
 }

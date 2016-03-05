@@ -31,7 +31,6 @@ public:
                 info_s["nombre"]   = info->at(0).toString();
                 info_s["tiempo"]   = info->at(1).toInt();
                 info_s["espacios"] = info->at(2).toInt();
-                qDebug() << "entra";
                 break;
             case cod_solicitud:
                 info_s["codigo"] = cod_solicitud;

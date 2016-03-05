@@ -16,9 +16,14 @@ void Network::server::incomingConnection(qintptr socketDescriptor){
       client_thread *my_conn = new client_thread(socketDescriptor);
       connect(this,    SIGNAL(killAllConnections()), my_conn, SLOT(closeConnection()));
       connect(my_conn, SIGNAL(finished()),   my_conn, SLOT(deleteLater()));
+      connect(my_conn, SIGNAL(messageFromClient(int, QString)),   this, SLOT(sendMessageFromClient(int, QString)));
+      emit clientSocketId(socketDescriptor);
       my_conn->start();
 }
 
 void Network::server::stopServer(){
     emit killAllConnections();
+}
+void Network::server::sendMessageFromClient(int socket_d, QString data){
+    emit messageFromClient(socket_d, data);
 }

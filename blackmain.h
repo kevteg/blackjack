@@ -77,6 +77,8 @@ namespace Ui {
             void countServerTime();
             void noClients();
             void connectToTcpClient(QString dir_ip);
+            void messagesFromCLient(int socket_des, QString data);
+            void setSocketIdToClient(int);
         private:
 
             Ui::blackmain            *ui;

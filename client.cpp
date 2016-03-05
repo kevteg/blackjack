@@ -13,6 +13,7 @@ bool Network::Client::connectToHost(QString host, int port){
     connected_B = socket->waitForConnected(3000);
 
     if(connected_B){//Ya se conecto aqui
+        this->set_socket_DS(socket);
         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
         connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
     }
@@ -29,6 +30,7 @@ void Network::Client::connected(){
 
 void Network::Client::disconnected(){
      qDebug()<<"Disconnected to " << host << ":" << port;
+     emit serverOut();
 }
 
 bool Network::Client::isConnected()   {

@@ -15,11 +15,11 @@ namespace Network
     {
         Q_OBJECT
     public:
-
         explicit server(QObject *parent = 0);
         void     startServer(QHostAddress adds, int port);
         void     stopServer();
     signals:
+        void messageFromClient(int, QString);
         void killAllConnections();
     protected:
        /**
@@ -29,6 +29,10 @@ namespace Network
          * @param s
          */
        void incomingConnection(qintptr socketDescriptor) Q_DECL_OVERRIDE;
+    private slots:
+        void sendMessageFromClient(int, QString);
+    signals:
+        void clientSocketId(int);
     private:
         int port;
         QHostAddress adds;

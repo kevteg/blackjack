@@ -34,6 +34,7 @@ namespace Network
          * @param serror
          */
         void error(QTcpSocket::SocketError serror);
+        void messageFromClient(int, QString);
     private:
         /*Número que da el so al socket*/
         int         socket_des;
