@@ -137,7 +137,6 @@ void blackmain::about(){
 
 void blackmain::processUdpData(QString sender_ip, QString data){
     QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
-    //QJsonDocument trama = QJsonDocument::fromJson(data.toUtf8());
     QStringList lista  = sender_ip.split(":");
     /*También hacer una a través del protocolo*/
     qDebug() << "Datos" << vector_datos->at(0).toInt() << " " << vector_datos->at(1).toString();
@@ -203,6 +202,7 @@ void blackmain::setSocketIdToClient(int s_id){
 //TODO emit cuando hay nuevo cliente para saber cual es el socket descriptor IMPORTANTE
 void blackmain::messagesFromCLient(int socket_des, QString data){
     qDebug() << "Game received message from " << socket_des << ": " << data;
+
 }
 
 blackmain::~blackmain(){
