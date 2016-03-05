@@ -89,15 +89,20 @@ public:
         QVector<QVariant> *vector_datos = new QVector<QVariant>;
          switch (trama.object()["codigo"].toInt()) {
          case cod_saludo:
+             vector_datos->append(cod_saludo);
              vector_datos->append(trama.object()["nombre"].toString());
              vector_datos->append(trama.object()["tiempo"].toInt());
              vector_datos->append(trama.object()["espacios"].toInt());
              break;
          case cod_solicitud:
+             vector_datos->append(cod_solicitud);
              vector_datos->append(trama.object()["nombre"].toString());
              break;
          case cod_aceptacion:
-
+             vector_datos->append(cod_aceptacion);
+             vector_datos->append(trama.object()["aceptado"].toString());
+             vector_datos->append(trama.object()["direccion"].toString());
+             vector_datos->append(trama.object()["id"].toString());
              break;
          case cod_presentacion:
 
