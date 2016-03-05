@@ -122,6 +122,7 @@ void blackmain::serverSelected(){
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
             connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(messagesFromCLient(int, QString)));
             connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));
+            connect(inter_ser, SIGNAL(GameStart()), this, SLOT(loadGameInterface()));
         }else
             inter_ser->setVisible(true);
         ui->gridLayout->addWidget(inter_ser);
@@ -162,17 +163,20 @@ void blackmain::noClients(){
 
 void blackmain::loadGameInterface(){
     bool open = true;
+    qDebug() << "1";
     if(inter_ser && inter_ser->isVisible() && !conteo_clientes){
          qDebug() << "Time up: No clients connected :'(";
          goInitInterface();
          open = false;
-    }else if(inter_cli->isVisible())
+    }else if(inter_cli && inter_cli->isVisible())
         inter_cli->setVisible(false);
-    else if(inter_ser->isVisible())
+    else if(inter_ser && inter_ser->isVisible())
         inter_ser->setVisible(false);
     else
         open = false;
+
     if(open){
+        qDebug() << "2";
         ui->gridLayout->addWidget(panel_principal);
         panel_principal->setVisible(true);
     }else

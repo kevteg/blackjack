@@ -9,6 +9,7 @@ interfaz_servidor::interfaz_servidor(QWidget *parent) : QWidget(parent), ui(new 
     ui->comenzar_partida->setEnabled(false);
    // ui->clientes_conectados->set
     connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(atras()));
+    connect(ui->comenzar_partida, SIGNAL(clicked(bool)),this, SLOT(emitGameStart()));
 }
 
 void interfaz_servidor::atras(){
@@ -30,4 +31,10 @@ interfaz_servidor::~interfaz_servidor(){
 
 void interfaz_servidor::addClientToList(player new_gamer){
     ui->clientes_conectados->addItem(new QListWidgetItem(new_gamer.getName()));
+    if(ui->clientes_conectados>0)
+        ui->comenzar_partida->setEnabled(true);
+}
+
+void interfaz_servidor::emitGameStart(){
+    emit GameStart();
 }

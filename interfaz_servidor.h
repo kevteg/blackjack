@@ -21,8 +21,10 @@ public:
     void addClientToList(player new_gamer);
 private slots:
     void atras();
+    void emitGameStart();
 signals:
     void goInitInterface();
+    void GameStart();
 private:
     Ui::interfaz_servidor *ui;
     int time;

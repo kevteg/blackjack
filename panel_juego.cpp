@@ -3,8 +3,8 @@
 
 panel_juego::panel_juego(QWidget *parent) : QWidget(parent), ui(new Ui::panel_juego){
     ui->setupUi(this);
-    ui->atras->setIcon(QIcon(QPixmap(":/imágenes/Imágenes/back.png")));
-    connect(ui->atras, SIGNAL(clicked(bool)), this, SLOT(goBack()));
+    ui->ir_atras->setIcon(QIcon(QPixmap(":/imágenes/Imágenes/back.png")));
+    connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(goBack()));
 }
 
 panel_juego::~panel_juego()

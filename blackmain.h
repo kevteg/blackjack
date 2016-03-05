@@ -60,7 +60,6 @@ namespace Ui {
              * @brief Carga la interfaz de usuario para servidor
              */
             void loadServerInterface();
-            void loadGameInterface();
         private slots:
             /**
              * @brief Evento de selección de cliente
@@ -81,6 +80,7 @@ namespace Ui {
             void connectToTcpClient(QString dir_ip);
             void messagesFromCLient(int socket_des, QString data);
             void setSocketIdToClient(int);
+             void loadGameInterface();
         private:
 
             Ui::blackmain            *ui;
