@@ -17,6 +17,7 @@ public:
     void updateTime(int time);
     void updateSpace(int space);
     int getTime();
+    QString getIp();
     QString getData();
 signals:
     void seleccionServidor(QString);

@@ -15,7 +15,6 @@ serverItem::serverItem(QString server_name, QString ip, int time, int space, QWi
     ui->time_progress->setValue(time);
     ui->space_progress->setMaximum(protocolo::max_players);
     ui->space_progress->setValue(space);
-    this->setStyleSheet("");
     connect(ui->server_button, SIGNAL(clicked(bool)), this, SLOT(sendServerData()));
 }
 
@@ -33,11 +32,16 @@ int serverItem::getTime(){
     return time;
 }
 
-QString serverItem::getData(){
+QString serverItem::getIp(){
     return ip;
 }
+
+QString serverItem::getData(){
+    return ip + " " + name;
+}
+
 void serverItem::sendServerData(){
-    emit seleccionServidor(getData());
+    emit seleccionServidor(getIp());
 }
 
 serverItem::~serverItem()

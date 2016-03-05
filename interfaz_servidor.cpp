@@ -7,7 +7,6 @@ interfaz_servidor::interfaz_servidor(QWidget *parent) : QWidget(parent), ui(new 
     ui->progressBar->setValue(0);
     ui->ir_atras->setIcon(QIcon(QPixmap(":/imágenes/Imágenes/back.png")));
     ui->comenzar_partida->setEnabled(false);
-   // ui->clientes_conectados->set
     connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(atras()));
     connect(ui->comenzar_partida, SIGNAL(clicked(bool)),this, SLOT(emitGameStart()));
 }

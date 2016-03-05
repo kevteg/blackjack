@@ -7,7 +7,7 @@ interfaz_cliente::interfaz_cliente(QWidget *parent) : QWidget(parent), ui(new Ui
     timer = new QTimer(this);
     connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(atras()));
     connect(timer, SIGNAL(timeout()), this, SLOT(resetServerList()));
-    //timer->start(5000);
+  //  timer->start(5000);
 }
 
 
@@ -18,7 +18,7 @@ void interfaz_cliente::atras(){
 void interfaz_cliente::addinListServer(QString server_name, QString server_ip, int time, int space){
     bool add = true;
     for(QVector <serverItem*>::iterator servidor = servidores.begin(); servidor != servidores.end() && add; servidor++){
-        if((*servidor)->getData().contains(server_ip))
+        if((*servidor)->getData().contains(server_ip) && (*servidor)->getData().contains(server_name))
             add = false;
         if(!add){
             (*servidor)->updateTime(time);
@@ -32,13 +32,13 @@ void interfaz_cliente::addinListServer(QString server_name, QString server_ip, i
     }
 }
 void interfaz_cliente::resetServerList(){
-    if(servidores.count()){
+    /*if(servidores.count()){
         for(QVector <serverItem*>::iterator servidor = servidores.begin(); servidor != servidores.end(); servidor++){
-            //(*sevidor)->setVisible(false);
-            //ui->serversLayout->removeWidget(*servidor);
+            (*servidor)->setVisible(false);
+            ui->serversLayout->removeWidget(*servidor);
         }
-     //   servidores.clear();
-    }
+        servidores.clear();
+    }*/
 }
 
 void interfaz_cliente::verifyConnectedServer(QString datos_servidor){
