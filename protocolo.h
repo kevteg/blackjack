@@ -3,7 +3,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QVector>
-
+#include <QVariant>
+#include <QDebug>
 class protocolo : public QObject
 {
     Q_OBJECT
@@ -19,7 +20,7 @@ public:
     static const int cod_final_juego     = 9;
     static const int max_time            = 120;
     static const int max_players         = 4;
-    static QByteArray protocolJson(int codigo, QVector<QVariant> * info ){
+    static QByteArray protocolJson(int codigo, QVector<QVariant> *info ){
            QJsonObject info_s;
            QJsonDocument trama;
             switch (codigo) {
