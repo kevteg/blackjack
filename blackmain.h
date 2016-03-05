@@ -28,6 +28,7 @@
 #define tcp_port 20060
 #define _server 0
 #define _client 1
+#define dir_multicast "220.220.220.220"
 namespace Ui {
     class blackmain;
     }
@@ -95,7 +96,7 @@ namespace Ui {
             int                       conteo_server;
             int                       conteo_clientes;
             QTimer                   *timer;
-            QVector<player>           jugadores;
+            QVector<player*>          jugadores;
 
     };
 

@@ -22,6 +22,7 @@ public:
     static const int cod_error           = 11;
     static const int max_time            = 120;
     static const int max_players         = 4;
+    static QString dir_multicast;
     static QByteArray generateJson(int codigo, QVector<QVariant> *info ){
            QJsonObject info_s;
            QJsonDocument trama;

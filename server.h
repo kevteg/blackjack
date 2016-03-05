@@ -18,8 +18,10 @@ namespace Network
         explicit server(QObject *parent = 0);
         void     startServer(QHostAddress adds, int port);
         void     stopServer();
+        void     sendToClient(int socket_descriptor, QByteArray datos);
     signals:
         void messageFromClient(int, QString);
+        void sendInfo(int socket_descriptor, QByteArray datos);
         void killAllConnections();
     protected:
        /**

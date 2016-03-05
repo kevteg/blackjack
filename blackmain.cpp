@@ -100,7 +100,8 @@ void blackmain::goInitInterface(){
         timer->stop();
     }if(inter_cli){
         inter_cli->setVisible(false);
-        cliente->closeConnection();
+        if(cliente->isConnected())
+            cliente->closeConnection();
     }
     if(com_udp->enviandoBroadcast())
         com_udp->detenerBroadcast();
@@ -139,7 +140,6 @@ void blackmain::processUdpData(QString sender_ip, QString data){
     QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
     QStringList lista  = sender_ip.split(":");
     /*También hacer una a través del protocolo*/
-    qDebug() << "Datos" << vector_datos->at(0).toInt() << " " << vector_datos->at(1).toString();
     if(vector_datos->at(0).toInt() == protocolo::cod_saludo)
         inter_cli->addinListServer(vector_datos->at(1).toString(), lista.value(lista.count() - 1), vector_datos->at(2).toInt(),  vector_datos->at(3).toInt());
 }
@@ -201,7 +201,27 @@ void blackmain::setSocketIdToClient(int s_id){
 
 //TODO emit cuando hay nuevo cliente para saber cual es el socket descriptor IMPORTANTE
 void blackmain::messagesFromCLient(int socket_des, QString data){
-    qDebug() << "Game received message from " << socket_des << ": " << data;
+    QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
+    switch (vector_datos->at(0).toInt()) {
+    case protocolo::cod_solicitud:
+        if(inter_ser->isVisible() && conteo_clientes < protocolo::max_players){
+            jugadores.append(new player());
+            (jugadores.back())->setName(vector_datos->at(1).toString());
+            (jugadores.back())->setId(++conteo_clientes);
+            (jugadores.back())->setSocketDes(socket_des);
+            QVector <QVariant> respuesta;
+            respuesta.append(true);
+            respuesta.append(dir_multicast);
+            respuesta.append(conteo_clientes);
+            servidor->sendToClient(socket_des, protocolo::generateJson(protocolo::cod_aceptacion, &respuesta));
+            inter_ser->addClientToList(*jugadores.back());
+        }
+
+        break;
+    default:
+        break;
+    }
+
 
 }
 

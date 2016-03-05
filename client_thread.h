@@ -26,6 +26,7 @@ namespace Network
          */
         void readyRead();
         void closeConnection();
+        void sendInformation(int socket_des, QByteArray datos);
     signals:
         /**
          * @brief esto se emite al servidor si hay un error de algún tipo,

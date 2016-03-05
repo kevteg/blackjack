@@ -30,6 +30,13 @@ void Network::client_thread::closeConnection(){
     exit(0);
 }
 
+void Network::client_thread::sendInformation(int socket_des, QByteArray datos){
+    if(socket_des == this->socket_des){
+        qDebug() << "LLEGA: " << datos << " para " << socket_des;
+        this->write(datos);
+    }
+}
+
 void Network::client_thread::readyRead(){
     QString s(socket->readAll());
     qDebug() << "Received from client " << socket->socketDescriptor() << ": " << s;

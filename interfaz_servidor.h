@@ -18,9 +18,9 @@ public:
     ~interfaz_servidor();
     void updateTime(int time);
     int getTime();
+    void addClientToList(player new_gamer);
 private slots:
     void atras();
-    void addClientToList(player new_gamer);
 signals:
     void goInitInterface();
 private:

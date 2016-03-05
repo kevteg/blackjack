@@ -17,6 +17,7 @@ void Network::server::incomingConnection(qintptr socketDescriptor){
       connect(this,    SIGNAL(killAllConnections()), my_conn, SLOT(closeConnection()));
       connect(my_conn, SIGNAL(finished()),   my_conn, SLOT(deleteLater()));
       connect(my_conn, SIGNAL(messageFromClient(int, QString)),   this, SLOT(sendMessageFromClient(int, QString)));
+      connect(this, SIGNAL(sendInfo(int, QByteArray)), my_conn, SLOT(sendInformation(int, QByteArray)));
       emit clientSocketId(socketDescriptor);
       my_conn->start();
 }
@@ -24,6 +25,11 @@ void Network::server::incomingConnection(qintptr socketDescriptor){
 void Network::server::stopServer(){
     emit killAllConnections();
 }
+
+void Network::server::sendToClient(int socket_descriptor, QByteArray datos){
+    emit sendInfo(socket_descriptor, datos);
+}
+
 void Network::server::sendMessageFromClient(int socket_d, QString data){
     emit messageFromClient(socket_d, data);
 }
