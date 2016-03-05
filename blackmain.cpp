@@ -188,7 +188,7 @@ void blackmain::countServerTime(){
         var.append(inter_ini->getNombreUsuario());
         var.append(conteo_server);
         var.append(conteo_clientes);
-        com_udp->enviaUnicoBroadcast(protocolo::protocolJson(protocolo::cod_presentacion, &var));
+        com_udp->enviaUnicoBroadcast(protocolo::protocolJson(protocolo::cod_saludo, &var));
     }
 }
 void blackmain::setSocketIdToClient(int s_id){
