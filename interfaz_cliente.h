@@ -7,7 +7,7 @@
 #include <QVector>
 #include <QString>
 #include "serveritem.h"
-#define separador_string "||||"
+
 namespace Ui {
 class interfaz_cliente;
 }

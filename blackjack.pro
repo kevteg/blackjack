@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     udpcomu.cpp \
     paneljugador.cpp \
     panel_juego.cpp \
-    serveritem.cpp
+    serveritem.cpp \
+    player.cpp
 
 HEADERS  += blackmain.h \
     image.h \
@@ -40,7 +41,8 @@ HEADERS  += blackmain.h \
     paneljugador.h \
     panel_juego.h \
     protocolo.h \
-    serveritem.h
+    serveritem.h \
+    player.h
 
 FORMS    += blackmain.ui \
     interfaz_inicio.ui \

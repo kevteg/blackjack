@@ -21,6 +21,7 @@
 #include "client.h"
 #include "panel_juego.h"
 #include "protocolo.h"
+#include "player.h"
 
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
@@ -94,6 +95,7 @@ namespace Ui {
             int                       conteo_server;
             int                       conteo_clientes;
             QTimer                   *timer;
+            QVector<player>           jugadores;
 
     };
 

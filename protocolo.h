@@ -22,7 +22,7 @@ public:
     static const int cod_error           = 11;
     static const int max_time            = 120;
     static const int max_players         = 4;
-    static QByteArray protocolJson(int codigo, QVector<QVariant> *info ){
+    static QByteArray generateJson(int codigo, QVector<QVariant> *info ){
            QJsonObject info_s;
            QJsonDocument trama;
             switch (codigo) {
@@ -84,6 +84,53 @@ public:
             trama = QJsonDocument(info_s);
             return trama.toJson();
         }
+    static QVector<QVariant> JsonToVector(QByteArray datos){
+        QJsonDocument trama = QJsonDocument::fromJson(data);
+        QVector<QVariant> vector_datos;
+         switch (trama.object()["codigo"]) {
+         case cod_saludo:
+             info_s["codigo"]   = cod_saludo;
+             info_s["nombre"]   = info->at(0).toString();
+             info_s["tiempo"]   = info->at(1).toInt();
+             info_s["espacios"] = info->at(2).toInt();
+             break;
+         case cod_solicitud:
+             info_s["codigo"] = cod_solicitud;
+             info_s["nombre"] = info->at(0).toString();
+             break;
+         case cod_aceptacion:
+
+             break;
+         case cod_presentacion:
+
+             break;
+         case cod_envio_carta:
+
+             break;
+         case cod_bono:
+
+             break;
+         case cod_ofrecer_carta:
+
+             break;
+         case cod_respuesta_carta:
+
+             break;
+         case cod_comienzo_ronda:
+
+             break;
+         case cod_final_juego:
+
+             break;
+         case cod_error:
+
+             break;
+         default:
+             break;
+         }
+         trama = QJsonDocument(info_s);
+         return trama.toJson();
+    }
 };
 
 #endif // PROTOCOLO_H

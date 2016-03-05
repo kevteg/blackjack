@@ -139,7 +139,8 @@ void blackmain::processUdpData(QString sender_ip, QString data){
     QJsonDocument trama = QJsonDocument::fromJson(data.toUtf8());
     QStringList lista  = sender_ip.split(":");
     /*También hacer una a través del protocolo*/
-    if(trama.object()["codigo"].toInt() == protocolo::cod_presentacion)
+
+    if(trama.object()["codigo"].toInt() == protocolo::cod_saludo)
         inter_cli->addinListServer(trama.object()["nombre"].toString(), lista.value(lista.count() - 1), trama.object()["tiempo"].toInt(),  trama.object()["espacios"].toInt());
 }
 void blackmain::connectToTcpClient(QString dir_ip){
@@ -149,7 +150,7 @@ void blackmain::connectToTcpClient(QString dir_ip){
     if(cliente->connectToHost(dir_ip, tcp_port)){
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
-        cliente->write(protocolo::protocolJson(protocolo::cod_solicitud, &var));
+        cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
     }
     loadGameInterface();
 }
