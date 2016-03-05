@@ -1,13 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#include <QString>
 
-#include <QObject>
-
-class player : public QObject
+class player
 {
-    Q_OBJECT
+
 public:
-    explicit player(QObject *parent = 0);
+    player();
     void    setName(QString);
     QString getName();
     void    setId(int);
@@ -15,10 +14,6 @@ public:
     void    setSocketDes(int);
     int     getSocketDes();
 
-
-signals:
-
-public slots:
 private:
     int id;
     int socket_descriptor;

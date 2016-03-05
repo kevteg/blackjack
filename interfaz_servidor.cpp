@@ -7,6 +7,7 @@ interfaz_servidor::interfaz_servidor(QWidget *parent) : QWidget(parent), ui(new 
     ui->progressBar->setValue(0);
     ui->ir_atras->setIcon(QIcon(QPixmap(":/imágenes/Imágenes/back.png")));
     ui->comenzar_partida->setEnabled(false);
+   // ui->clientes_conectados->set
     connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(atras()));
 }
 
@@ -25,4 +26,8 @@ int interfaz_servidor::getTime(){
 
 interfaz_servidor::~interfaz_servidor(){
     delete ui;
+}
+
+void interfaz_servidor::addClientToList(player new_gamer){
+    ui->clientes_conectados->addItem(new QListWidgetItem(new_gamer.getName()));
 }

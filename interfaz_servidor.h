@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QString>
 #include "protocolo.h"
+#include "player.h"
 namespace Ui {
 class interfaz_servidor;
 }
@@ -19,6 +20,7 @@ public:
     int getTime();
 private slots:
     void atras();
+    void addClientToList(player new_gamer);
 signals:
     void goInitInterface();
 private:
