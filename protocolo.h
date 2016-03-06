@@ -23,6 +23,13 @@ public:
     static const int max_time            = 120;
     static const int max_players         = 4;
     static QString dir_multicast;
+    /*Estados de lo que está pasando: Esto es para que luego de que comience el juego no se pueda volver loco al cliente o al servidor con mensajes erróneos*/
+    static const int nothing             = 0;
+    static const int waiting_clients     = 1;
+    static const int waiting_server_res  = 2;
+    static const int playing             = 3;
+    static const int waiting_game_to_start = 4;
+
     static QByteArray generateJson(int codigo, QVector<QVariant> *info ){
            QJsonObject info_s;
            QJsonDocument trama;
@@ -101,9 +108,9 @@ public:
              break;
          case cod_aceptacion:
              vector_datos->append(cod_aceptacion);
-             vector_datos->append(trama.object()["aceptado"].toString());
+             vector_datos->append(trama.object()["aceptado"].toBool());
              vector_datos->append(trama.object()["direccion"].toString());
-             vector_datos->append(trama.object()["id"].toString());
+             vector_datos->append(trama.object()["id"].toInt());
              break;
          case cod_presentacion:
 

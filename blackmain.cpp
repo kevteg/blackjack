@@ -62,6 +62,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     conteo_clientes = 0;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(countServerTime()));
+    current_state = protocolo::nothing;
     setConnections();
 }
 
@@ -81,6 +82,7 @@ void blackmain::clientSelected(){
                 connect(inter_cli, SIGNAL(goInitInterface()),           this, SLOT(goInitInterface()));
                 connect(inter_cli, SIGNAL(conexionTcpCliente(QString)), this, SLOT(connectToTcpClient(QString)));
                 connect(cliente, SIGNAL(serverOut()), this, SLOT(goInitInterface()));
+                connect(cliente, SIGNAL(dataReceived(QString)), this, SLOT(tcpMessagesFromServer(QString)));
             }else
                 inter_cli->setVisible(true);
             ui->gridLayout->addWidget(inter_cli);
@@ -91,6 +93,7 @@ void blackmain::clientSelected(){
 }
 
 void blackmain::goInitInterface(){
+    current_state = protocolo::nothing;
     inter_ini->setVisible(true);
     if(inter_ser){
         inter_ser->setVisible(false);
@@ -115,12 +118,13 @@ void blackmain::serverSelected(){
     if(inter_ini->getBarra()->toPlainText() != ""){
         qDebug() << "Blackjack will run as server";
         inter_ini->setVisible(false);
+        current_state = protocolo::waiting_clients;
         if(!inter_ser){
             inter_ser = new interfaz_servidor(this);
             servidor = new Network::server;
             servidor->startServer(QHostAddress(local_ip), tcp_port);
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
-            connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(messagesFromCLient(int, QString)));
+            connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(tcpMessagesFromCLient(int, QString)));
             /*connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));*/
             connect(servidor, SIGNAL(clientOutofServer(int)), this, SLOT(takeDisconnectedClientOut(int)));
             connect(inter_ser, SIGNAL(GameStart()), this, SLOT(loadGameInterface()));
@@ -153,9 +157,9 @@ void blackmain::connectToTcpClient(QString dir_ip){
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
         cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
-    }
-    //Esto todavia no se deberia enviar
-    loadGameInterface();
+        current_state = protocolo::waiting_server_res;
+    }else
+        clientSelected();
 }
 
 void blackmain::noClients(){
@@ -165,28 +169,39 @@ void blackmain::noClients(){
 
 void blackmain::loadGameInterface(){
     bool open = true;
+
     if(inter_ser && inter_ser->isVisible() && !conteo_clientes){
          qDebug() << "Time up: No clients connected :'(";
          goInitInterface();
          open = false;
-    }else if(inter_cli && inter_cli->isVisible())
+    }else if(inter_cli && inter_cli->isVisible()){
         inter_cli->setVisible(false);
-    else if(inter_ser && inter_ser->isVisible())
+        current_state = protocolo::waiting_game_to_start;
+        ui->statusBar->showMessage(tr("¡Esperemos que lleguen los demás jugadores!"));
+    }else if(inter_ser && inter_ser->isVisible()){
         inter_ser->setVisible(false);
-    else
+        current_state = protocolo::playing;
+        ui->statusBar->showMessage(tr("¡Comienza el juego!"));
+    }else
         open = false;
 
     if(open){
         ui->gridLayout->addWidget(panel_principal);
         panel_principal->setVisible(true);
-    }else
+
+    }else{
+        current_state = protocolo::nothing;
         noClients();
+        ui->statusBar->showMessage(tr(":'("));
+    }
 }
 
 void blackmain::countServerTime(){
-    if(conteo_server >= protocolo::max_time)
+
+    if(conteo_server >= protocolo::max_time ||  conteo_clientes >= protocolo::max_players){
         loadGameInterface();
-    else{
+        timer->stop();
+    }else{
         conteo_server++;
         this->inter_ser->updateTime(conteo_server);
         QVector <QVariant> var;
@@ -197,12 +212,12 @@ void blackmain::countServerTime(){
     }
 }
 
-void blackmain::messagesFromCLient(int socket_des, QString data){
-    //Aqui va todo lo que el cliente le dice al servidor
+void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
+    //Aqui va todo lo que el cliente le dice al servidor por UNICAST
     QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
     switch (vector_datos->at(0).toInt()) {
     case protocolo::cod_solicitud:
-        if(inter_ser->isVisible() && conteo_clientes < protocolo::max_players){
+        if(current_state == protocolo::waiting_clients){
             jugadores.append(new player());
             (jugadores.back())->setName(vector_datos->at(1).toString());
             (jugadores.back())->setId(++conteo_clientes);
@@ -225,6 +240,29 @@ void blackmain::takeDisconnectedClientOut(int socket_des){
             inter_ser->outCLientFromList((**s_player));
             conteo_clientes--;
         }
+}
+
+void blackmain::tcpMessagesFromServer(QString data){
+    //Aqui va todo lo que el servidor le dice al cliente por UNICAST
+    QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
+    switch (vector_datos->at(0).toInt()) {
+    case protocolo::cod_aceptacion:
+        if(current_state == protocolo::waiting_server_res){ //If estado esperando respuesta
+            if(vector_datos->at(1).toInt()){
+                direccion_multicast_ser = vector_datos->at(2).toString();
+                mySelf.setId(vector_datos->at(2).toInt());
+                mySelf.setName(inter_ini->getBarra()->toPlainText());
+                loadGameInterface();
+            }else{
+                goInitInterface();
+                ui->statusBar->showMessage(tr("No fuimos aceptados en el juego :'("));
+            }
+
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 blackmain::~blackmain(){

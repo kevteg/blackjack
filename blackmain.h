@@ -78,7 +78,8 @@ namespace Ui {
             void countServerTime();
             void noClients();
             void connectToTcpClient(QString dir_ip);
-            void messagesFromCLient(int socket_des, QString data);
+            void tcpMessagesFromCLient(int socket_des, QString data);
+            void tcpMessagesFromServer(QString data);
             void loadGameInterface();
             void takeDisconnectedClientOut(int socket_des);
         private:
@@ -97,6 +98,9 @@ namespace Ui {
             int                       conteo_clientes;
             QTimer                   *timer;
             QVector<player*>          jugadores;
+            player                    mySelf;
+            QString                   direccion_multicast_ser;
+            int                       current_state;
 
     };
 

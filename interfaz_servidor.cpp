@@ -37,11 +37,13 @@ void interfaz_servidor::outCLientFromList(player gamer){
     bool found = false;
     for (int var = 0; var < ui->clientes_conectados->count() && !found; var++) {
         QListWidgetItem* item = ui->clientes_conectados->item(var);
-
         if(item->text() == gamer.getName()){
             delete item;
             found = true;
         }
+    }
+    if(!ui->clientes_conectados->count()){
+        ui->comenzar_partida->setEnabled(false);
     }
 }
 
