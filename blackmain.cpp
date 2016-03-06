@@ -121,7 +121,8 @@ void blackmain::serverSelected(){
             servidor->startServer(QHostAddress(local_ip), tcp_port);
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
             connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(messagesFromCLient(int, QString)));
-            connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));
+            /*connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));*/
+            connect(servidor, SIGNAL(clientOutofServer(int)), this, SLOT(takeDisconnectedClientOut(int)));
             connect(inter_ser, SIGNAL(GameStart()), this, SLOT(loadGameInterface()));
         }else
             inter_ser->setVisible(true);
@@ -153,6 +154,7 @@ void blackmain::connectToTcpClient(QString dir_ip){
         var.append(inter_ini->getNombreUsuario());
         cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
     }
+    //Esto todavia no se deberia enviar
     loadGameInterface();
 }
 
@@ -163,7 +165,6 @@ void blackmain::noClients(){
 
 void blackmain::loadGameInterface(){
     bool open = true;
-    qDebug() << "1";
     if(inter_ser && inter_ser->isVisible() && !conteo_clientes){
          qDebug() << "Time up: No clients connected :'(";
          goInitInterface();
@@ -176,7 +177,6 @@ void blackmain::loadGameInterface(){
         open = false;
 
     if(open){
-        qDebug() << "2";
         ui->gridLayout->addWidget(panel_principal);
         panel_principal->setVisible(true);
     }else
@@ -196,13 +196,6 @@ void blackmain::countServerTime(){
         com_udp->enviaUnicoBroadcast(protocolo::generateJson(protocolo::cod_saludo, &var));
     }
 }
-void blackmain::setSocketIdToClient(int s_id){
-    //aqui se asocia el id del cada socket al cliente para saber de quien es cuando envie su solicitud
-    //Entonces aqui se van inicializando los jugadores
-    //Crear una clase de jugador que guarde esta data
-    qDebug() << "SOCKET SAVED: " << s_id;
-}
-
 
 void blackmain::messagesFromCLient(int socket_des, QString data){
     //Aqui va todo lo que el cliente le dice al servidor
@@ -225,6 +218,13 @@ void blackmain::messagesFromCLient(int socket_des, QString data){
     default:
         break;
     }
+}
+void blackmain::takeDisconnectedClientOut(int socket_des){
+    for(QVector <player*>::iterator s_player = jugadores.begin(); s_player != jugadores.end(); s_player++)
+        if((*s_player)->getSocketDes() == socket_des){
+            inter_ser->outCLientFromList((**s_player));
+            conteo_clientes--;
+        }
 }
 
 blackmain::~blackmain(){

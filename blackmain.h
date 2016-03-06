@@ -79,8 +79,8 @@ namespace Ui {
             void noClients();
             void connectToTcpClient(QString dir_ip);
             void messagesFromCLient(int socket_des, QString data);
-            void setSocketIdToClient(int);
-             void loadGameInterface();
+            void loadGameInterface();
+            void takeDisconnectedClientOut(int socket_des);
         private:
 
             Ui::blackmain            *ui;

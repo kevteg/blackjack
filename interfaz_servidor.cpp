@@ -30,8 +30,19 @@ interfaz_servidor::~interfaz_servidor(){
 
 void interfaz_servidor::addClientToList(player new_gamer){
     ui->clientes_conectados->addItem(new QListWidgetItem(new_gamer.getName()));
-    if(ui->clientes_conectados>0)
+    if(ui->clientes_conectados)
         ui->comenzar_partida->setEnabled(true);
+}
+void interfaz_servidor::outCLientFromList(player gamer){
+    bool found = false;
+    for (int var = 0; var < ui->clientes_conectados->count() && !found; var++) {
+        QListWidgetItem* item = ui->clientes_conectados->item(var);
+
+        if(item->text() == gamer.getName()){
+            delete item;
+            found = true;
+        }
+    }
 }
 
 void interfaz_servidor::emitGameStart(){

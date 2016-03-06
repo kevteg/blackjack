@@ -32,9 +32,11 @@ namespace Network
          */
        void incomingConnection(qintptr socketDescriptor) Q_DECL_OVERRIDE;
     private slots:
+        void clientOut(int socket_des);
         void sendMessageFromClient(int, QString);
     signals:
         void clientSocketId(int);
+        void clientOutofServer(int);
     private:
         int port;
         QHostAddress adds;

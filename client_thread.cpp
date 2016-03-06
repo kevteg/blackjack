@@ -21,6 +21,7 @@ void Network::client_thread::run(){
 
 void Network::client_thread::disconnected(){
     qDebug() << "Disconnected from " << this->socket_des;
+    emit clientOut(this->socket_des);
     socket->deleteLater();
     exit(0);
 }
@@ -31,10 +32,8 @@ void Network::client_thread::closeConnection(){
 }
 
 void Network::client_thread::sendInformation(int socket_des, QByteArray datos){
-    if(socket_des == this->socket_des){
-        qDebug() << "LLEGA: " << datos << " para " << socket_des;
+    if(socket_des == this->socket_des)
         this->write(datos);
-    }
 }
 
 void Network::client_thread::readyRead(){

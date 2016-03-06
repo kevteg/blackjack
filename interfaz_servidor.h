@@ -19,6 +19,7 @@ public:
     void updateTime(int time);
     int getTime();
     void addClientToList(player new_gamer);
+    void outCLientFromList(player gamer);
 private slots:
     void atras();
     void emitGameStart();

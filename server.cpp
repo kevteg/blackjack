@@ -18,12 +18,15 @@ void Network::server::incomingConnection(qintptr socketDescriptor){
       connect(my_conn, SIGNAL(finished()),   my_conn, SLOT(deleteLater()));
       connect(my_conn, SIGNAL(messageFromClient(int, QString)),   this, SLOT(sendMessageFromClient(int, QString)));
       connect(this, SIGNAL(sendInfo(int, QByteArray)), my_conn, SLOT(sendInformation(int, QByteArray)));
-      emit clientSocketId(socketDescriptor);
+      connect(my_conn, SIGNAL(clientOut(int)), this, SLOT(clientOut(int)));
       my_conn->start();
 }
 
 void Network::server::stopServer(){
     emit killAllConnections();
+}
+void Network::server::clientOut(int socket_des){
+    emit clientOutofServer(socket_des);
 }
 
 void Network::server::sendToClient(int socket_descriptor, QByteArray datos){
