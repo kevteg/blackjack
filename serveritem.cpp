@@ -15,7 +15,9 @@ serverItem::serverItem(QString server_name, QString ip, int time, int space, QWi
     ui->time_progress->setValue(time);
     ui->space_progress->setMaximum(protocolo::max_players);
     ui->space_progress->setValue(space);
+    this->setStyleSheet("QToolButton{width: 150px;}");
     connect(ui->server_button, SIGNAL(clicked(bool)), this, SLOT(sendServerData()));
+
 }
 
 void serverItem::updateTime(int time){
