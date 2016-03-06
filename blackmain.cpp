@@ -89,7 +89,6 @@ void blackmain::clientSelected(){
             com_udp->listenBroadcast();
         }else
             ui->statusBar->showMessage(tr("¡Selecciona tu nombre como cliente!"));
-
 }
 
 void blackmain::goInitInterface(){
@@ -214,6 +213,7 @@ void blackmain::countServerTime(){
 
 void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
     //Aqui va todo lo que el cliente le dice al servidor por UNICAST
+    //Varios tipos de emit, para cartas y eso que manejara la clase del juego
     QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
     if(vector_datos){
         switch (vector_datos->at(0).toInt()) {
@@ -246,10 +246,13 @@ void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
     }
 }
 void blackmain::takeDisconnectedClientOut(int socket_des){
-    for(QVector <player*>::iterator s_player = jugadores.begin(); s_player != jugadores.end(); s_player++)
+    bool out = false;
+    for(QVector <player*>::iterator s_player = jugadores.begin(); s_player != jugadores.end() && !out; s_player++)
         if((*s_player)->getSocketDes() == socket_des){
             inter_ser->outCLientFromList((**s_player));
             conteo_clientes--;
+            if(jugadores.removeOne((*s_player)))
+                out = true;
         }
 }
 

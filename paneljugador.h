@@ -6,7 +6,7 @@
 namespace Ui {
 class panelJugador;
 }
-
+/*Convertir en player y agregar sus métodos*/
 class panelJugador : public QWidget
 {
     Q_OBJECT
