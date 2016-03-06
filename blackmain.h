@@ -60,6 +60,7 @@ namespace Ui {
              * @brief Carga la interfaz de usuario para servidor
              */
             void loadServerInterface();
+            void sendPresentation();
         private slots:
             /**
              * @brief Evento de selección de cliente

@@ -5,6 +5,8 @@
 #include <QVector>
 #include <QVariant>
 #include <QDebug>
+#include <QJsonArray>
+
 class protocolo : public QObject
 {
     Q_OBJECT
@@ -50,10 +52,28 @@ public:
                 info_s["direccion"]   = info->at(1).toString();
                 info_s["id"]          = info->at(2).toInt();
                 break;
-            case cod_presentacion:
+            case cod_presentacion:{
+                QJsonArray jugadores;
+                int i = 0;
                 info_s["codigo"]      = cod_presentacion;
+                QJsonObject arreglo_interno;
+                for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
+                    for (int var = 0; var < arreglo_interno.count() && !i; ++var)
+                        arreglo_interno.remove((!var)?"nombre":"id_asignado");
+                    if(!i)
+                        arreglo_interno["nombre"] = variable->toString();
+                    else
+                        arreglo_interno["id_asignado"] = variable->toInt();
+                    i++;
+                    if(i == 2){
+                        jugadores.append(arreglo_interno);
+                        i = 0;
+                    }
+                }
+                info_s["jugadores"] = jugadores;
                 //info_s[] array jugadores
                 break;
+            }
             case cod_envio_carta:
                 info_s["codigo"]      = cod_envio_carta;
                 info_s["id"]          = info->at(0).toInt();
@@ -94,51 +114,54 @@ public:
         }
     static QVector<QVariant>* JsonToVector(QByteArray datos){
         QJsonDocument trama = QJsonDocument::fromJson(datos);
-        QVector<QVariant> *vector_datos = new QVector<QVariant>;
-         switch (trama.object()["codigo"].toInt()) {
-         case cod_saludo:
-             vector_datos->append(cod_saludo);
-             vector_datos->append(trama.object()["nombre"].toString());
-             vector_datos->append(trama.object()["tiempo"].toInt());
-             vector_datos->append(trama.object()["espacios"].toInt());
-             break;
-         case cod_solicitud:
-             vector_datos->append(cod_solicitud);
-             vector_datos->append(trama.object()["nombre"].toString());
-             break;
-         case cod_aceptacion:
-             vector_datos->append(cod_aceptacion);
-             vector_datos->append(trama.object()["aceptado"].toBool());
-             vector_datos->append(trama.object()["direccion"].toString());
-             vector_datos->append(trama.object()["id"].toInt());
-             break;
-         case cod_presentacion:
+         QVector<QVariant> *vector_datos = NULL;
+        if(trama.isObject()){
+            vector_datos = new QVector<QVariant>;
+             switch (trama.object()["codigo"].toInt()) {
+             case cod_saludo:
+                 vector_datos->append(cod_saludo);
+                 vector_datos->append(trama.object()["nombre"].toString());
+                 vector_datos->append(trama.object()["tiempo"].toInt());
+                 vector_datos->append(trama.object()["espacios"].toInt());
+                 break;
+             case cod_solicitud:
+                 vector_datos->append(cod_solicitud);
+                 vector_datos->append(trama.object()["nombre"].toString());
+                 break;
+             case cod_aceptacion:
+                 vector_datos->append(cod_aceptacion);
+                 vector_datos->append(trama.object()["aceptado"].toBool());
+                 vector_datos->append(trama.object()["direccion"].toString());
+                 vector_datos->append(trama.object()["id"].toInt());
+                 break;
+             case cod_presentacion:
 
-             break;
-         case cod_envio_carta:
+                 break;
+             case cod_envio_carta:
 
-             break;
-         case cod_bono:
+                 break;
+             case cod_bono:
 
-             break;
-         case cod_ofrecer_carta:
+                 break;
+             case cod_ofrecer_carta:
 
-             break;
-         case cod_respuesta_carta:
+                 break;
+             case cod_respuesta_carta:
 
-             break;
-         case cod_comienzo_ronda:
+                 break;
+             case cod_comienzo_ronda:
 
-             break;
-         case cod_final_juego:
+                 break;
+             case cod_final_juego:
 
-             break;
-         case cod_error:
+                 break;
+             case cod_error:
 
-             break;
-         default:
-             break;
-         }
+                 break;
+             default:
+                 break;
+             }
+        }
          return vector_datos;
     }
 };

@@ -182,6 +182,8 @@ void blackmain::loadGameInterface(){
         inter_ser->setVisible(false);
         current_state = protocolo::playing;
         ui->statusBar->showMessage(tr("¡Comienza el juego!"));
+        timer->stop();
+        sendPresentation();
     }else
         open = false;
 
@@ -197,10 +199,8 @@ void blackmain::loadGameInterface(){
 }
 
 void blackmain::countServerTime(){
-
     if(conteo_server >= protocolo::max_time ||  conteo_clientes >= protocolo::max_players){
         loadGameInterface();
-        timer->stop();
     }else{
         conteo_server++;
         this->inter_ser->updateTime(conteo_server);
@@ -215,23 +215,34 @@ void blackmain::countServerTime(){
 void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
     //Aqui va todo lo que el cliente le dice al servidor por UNICAST
     QVector<QVariant> *vector_datos = protocolo::JsonToVector(data.toUtf8());
-    switch (vector_datos->at(0).toInt()) {
-    case protocolo::cod_solicitud:
-        if(current_state == protocolo::waiting_clients){
-            jugadores.append(new player());
-            (jugadores.back())->setName(vector_datos->at(1).toString());
-            (jugadores.back())->setId(++conteo_clientes);
-            (jugadores.back())->setSocketDes(socket_des);
-            QVector <QVariant> respuesta;
-            respuesta.append(true);
-            respuesta.append(dir_multicast);
-            respuesta.append(conteo_clientes);
-            servidor->sendToClient(socket_des, protocolo::generateJson(protocolo::cod_aceptacion, &respuesta));
-            inter_ser->addClientToList(*jugadores.back());
+    if(vector_datos){
+        switch (vector_datos->at(0).toInt()) {
+        case protocolo::cod_solicitud:
+            if(current_state == protocolo::waiting_clients){
+                jugadores.append(new player());
+                (jugadores.back())->setName(vector_datos->at(1).toString());
+                (jugadores.back())->setId(++conteo_clientes);
+                (jugadores.back())->setSocketDes(socket_des);
+                QVector <QVariant> respuesta;
+                respuesta.append(true);
+                respuesta.append(dir_multicast);
+                respuesta.append(conteo_clientes);
+                servidor->sendToClient(socket_des, protocolo::generateJson(protocolo::cod_aceptacion, &respuesta));
+                inter_ser->addClientToList(*jugadores.back());
+            }else{
+                QVector <QVariant> respuesta;
+                respuesta.append(false);
+                respuesta.append("null");
+                respuesta.append(0);
+                servidor->sendToClient(socket_des, protocolo::generateJson(protocolo::cod_aceptacion, &respuesta));
+            }
+            break;
+        default:
+            break;
         }
-        break;
-    default:
-        break;
+    }else{
+        ui->statusBar->showMessage(tr("Error fatal con la data"));
+        qDebug() << "Fatal error with client in socket " << socket_des << ". Data: " << data;
     }
 }
 void blackmain::takeDisconnectedClientOut(int socket_des){
@@ -253,6 +264,7 @@ void blackmain::tcpMessagesFromServer(QString data){
                 mySelf.setId(vector_datos->at(2).toInt());
                 mySelf.setName(inter_ini->getBarra()->toPlainText());
                 loadGameInterface();
+                cliente->write("hola graxia");
             }else{
                 goInitInterface();
                 ui->statusBar->showMessage(tr("No fuimos aceptados en el juego :'("));
@@ -260,9 +272,30 @@ void blackmain::tcpMessagesFromServer(QString data){
 
         }
         break;
+    case protocolo::cod_presentacion:
+        if(current_state == protocolo::waiting_game_to_start){
+
+        }
+        break;
     default:
         break;
     }
+}
+
+void blackmain::sendPresentation(){
+    //Agregar a myself a los jugadores
+    //Dentro de la clase jugadores hace falta el panel de juego
+    QVector <QVariant> respuesta;
+    respuesta.append("Prueba");
+    respuesta.append(1);
+    respuesta.append("Prueba1");
+    respuesta.append(2);
+    respuesta.append("Prueba2");
+    respuesta.append(3);
+    respuesta.append("Prueba3");
+    respuesta.append(4);
+    //Es necesario conectarse al grupo multicast en este punto
+    qDebug() << protocolo::generateJson(protocolo::cod_presentacion, &respuesta);
 }
 
 blackmain::~blackmain(){
