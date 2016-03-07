@@ -93,17 +93,13 @@ bool Network::udpComu::enviandoBroadcast(){
 void Network::udpComu::readyReadMulticast(){
     QByteArray data;
     data.resize(multi_socket->pendingDatagramSize());
-   /* QHostAddress sender;
-    quint16 puerto;*/
     multi_socket->readDatagram(data.data(), data.size());
-    qDebug() << "Multicast message: " << data;
     emit incomingMulticastData(QString(data));
 }
 
 void Network::udpComu::joinMulticast(QString dir_multicast){
     this->dir_multicast = QHostAddress(dir_multicast);
     multi_socket = new QUdpSocket;
-    qDebug() << "MULTICAST";
     multi_socket->setSocketOption(QAbstractSocket::MulticastTtlOption, protocolo::udpTtl);
     multi_socket->bind(QHostAddress::AnyIPv4, protocolo::multi_port, QUdpSocket::ShareAddress);
     multi_socket->joinMulticastGroup(this->dir_multicast);
@@ -112,6 +108,5 @@ void Network::udpComu::joinMulticast(QString dir_multicast){
 }
 
 void Network::udpComu::sendMulticastMessage(QByteArray data){
-    qDebug() << "TRYING TO SEND: " << QString(data);
     multi_socket->writeDatagram(data, this->dir_multicast, protocolo::multi_port);
 }

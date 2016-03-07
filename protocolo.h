@@ -25,6 +25,8 @@ public:
     static const int max_time            = 120;
     static const int max_players         = 4;
     static QString dir_multicast;
+    static const int servidor            = 0;
+    static const int cliente             = 1;
     /*Estados de lo que está pasando: Esto es para que luego de que comience el juego no se pueda volver loco al cliente o al servidor con mensajes erróneos*/
     static const int nothing             = 0;
     static const int waiting_clients     = 1;
@@ -75,13 +77,10 @@ public:
                     }
                 }
                 info_s["jugadores"] = jugadores;
-                //info_s[] array jugadores
                 break;
             }
-            case cod_envio_carta:
-                info_s["codigo"]      = cod_envio_carta;
-                info_s["id"]          = info->at(0).toInt();
-                info_s["carta"]       = info->at(1).toString();
+            case cod_comienzo_ronda:
+                info_s["codigo"]      = cod_comienzo_ronda;
                 break;
             case cod_bono:
                 info_s["codigo"]      = cod_bono;
@@ -95,15 +94,16 @@ public:
                 info_s["codigo"]      = cod_respuesta_carta;
                 info_s["jugar"]       = info->at(0).toBool();
                 break;
-            case cod_comienzo_ronda:
-                info_s["codigo"]      = cod_comienzo_ronda;
-                //info_s[] ARRAY
+            case cod_envio_carta:
+                info_s["codigo"]      = cod_envio_carta;
+                info_s["id"]          = info->at(0).toInt();
+                info_s["carta"]       = info->at(1).toString();
                 break;
+
             case cod_final_juego:
                 info_s["codigo"]            = cod_final_juego;
                 info_s["rondas"]            = info->at(0).toInt();
                 info_s["cartas_jugadas"]    = info->at(1).toInt();
-                //info_s[""] Array puntajes
                 info_s["desempate"]         = info->at(3).toBool();
                 break;
             case cod_error:
@@ -138,12 +138,36 @@ public:
                  vector_datos->append(trama.object()["direccion"].toString());
                  vector_datos->append(trama.object()["id"].toInt());
                  break;
-             case cod_presentacion:
-
+             case cod_presentacion:{
+                 vector_datos->append(cod_presentacion);
+                 QJsonArray arreglo_interno;
+                 arreglo_interno = trama.object()["jugadores"].toArray();
+                 for(int var = 0; var < arreglo_interno.size(); var++){
+                     QJsonObject obj = arreglo_interno[var].toObject();
+                     for(int i = 0; i < obj.size(); i++){
+                         if(!i)
+                           vector_datos->append(obj["nombre"].toString());
+                         else
+                           vector_datos->append(obj["id_asignado"].toInt());
+                     }
+                 }
                  break;
-             case cod_envio_carta:
-
+                }
+             case cod_comienzo_ronda:{
+                 vector_datos->append(cod_comienzo_ronda);
+                 QJsonArray arreglo_interno;
+                 arreglo_interno = trama.object()["jugadores"].toArray();
+                 for(int var = 0; var < arreglo_interno.size(); var++){
+                     QJsonObject obj = arreglo_interno[var].toObject();
+                     for(int i = 0; i < obj.size(); i++){
+                         if(!i)
+                           vector_datos->append(obj["id"].toString());
+                         else
+                           vector_datos->append(obj["puntaje"].toInt());
+                     }
+                 }
                  break;
+                }
              case cod_bono:
 
                  break;
@@ -153,9 +177,10 @@ public:
              case cod_respuesta_carta:
 
                  break;
-             case cod_comienzo_ronda:
 
+             case cod_envio_carta:
                  break;
+
              case cod_final_juego:
 
                  break;
