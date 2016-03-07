@@ -44,6 +44,8 @@ namespace Network{
         private:
             udpComu     *ins_hilo;
             QUdpSocket  *socket;
+/*            QUdpSocket  *sender_multi_socket;
+            QUdpSocket  *receiver_multi_socket;*/
             QUdpSocket  *multi_socket;
             QThread     *hilo_broadcast;
             QHostAddress dir_multicast;

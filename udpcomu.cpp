@@ -101,14 +101,17 @@ void Network::udpComu::readyReadMulticast(){
 }
 
 void Network::udpComu::joinMulticast(QString dir_multicast){
-    this->dir_multicast == QHostAddress(dir_multicast);
+    this->dir_multicast = QHostAddress(dir_multicast);
     multi_socket = new QUdpSocket;
+    qDebug() << "MULTICAST";
     multi_socket->setSocketOption(QAbstractSocket::MulticastTtlOption, protocolo::udpTtl);
     multi_socket->bind(QHostAddress::AnyIPv4, protocolo::multi_port, QUdpSocket::ShareAddress);
     multi_socket->joinMulticastGroup(this->dir_multicast);
     connect(multi_socket, SIGNAL(readyRead()), this, SLOT(readyReadMulticast()));
+
 }
 
 void Network::udpComu::sendMulticastMessage(QByteArray data){
-    multi_socket->writeDatagram(data.data(), data.size(), this->dir_multicast, protocolo::multi_port);
+    qDebug() << "TRYING TO SEND: " << QString(data);
+    multi_socket->writeDatagram(data, this->dir_multicast, protocolo::multi_port);
 }

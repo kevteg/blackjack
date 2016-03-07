@@ -287,18 +287,18 @@ void blackmain::tcpMessagesFromServer(QString data){
     }
 }
 void blackmain::multicastData(QString data){
-    qDebug() << "Incoming data from multicast: " << data;
+    /*qDebug() << "Incoming data from multicast"<< current_state<<": " << data;
     if(current_state == protocolo::waiting_game_to_start)
         com_udp->sendMulticastMessage("Client: it came");
     else
-        com_udp->sendMulticastMessage("Server: it came");
+        com_udp->sendMulticastMessage("Server: it came");*/
 }
 
 void blackmain::sendPresentation(){
     com_udp->joinMulticast(dir_multicast);
     //Agregar a myself a los jugadores
     //Dentro de la clase jugadores hace falta el panel de juego
-    qDebug() << "ENTRA";
+
     QVector <QVariant> respuesta;
     respuesta.append("Prueba");
     respuesta.append(1);
@@ -308,6 +308,7 @@ void blackmain::sendPresentation(){
     respuesta.append(3);
     respuesta.append("Prueba3");
     respuesta.append(4);
+
     //Es necesario conectarse al grupo multicast en este punto
     com_udp->sendMulticastMessage(protocolo::generateJson(protocolo::cod_presentacion, &respuesta));
     //qDebug() << protocolo::generateJson(protocolo::cod_presentacion, &respuesta);
@@ -316,3 +317,4 @@ void blackmain::sendPresentation(){
 blackmain::~blackmain(){
     delete ui;
 }
+
