@@ -3,6 +3,7 @@
 Network::udpComu::udpComu(){
     enviando_broadcast  = false;
     listening_broadcast = false;
+
 }
 
 void Network::udpComu::startBroadcast(QString datos){
@@ -19,12 +20,12 @@ void Network::udpComu::startBroadcast(QString datos){
 
 void Network::udpComu::listenBroadcast(){
     if(!listening_broadcast){
-         qDebug() << "Listening to servers broadcast in port: " << _port;
+        socket = new QUdpSocket(this);
+        connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
+        connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+         qDebug() << "Listening to servers broadcast in port: " << protocolo::udp_port;
          listening_broadcast = true;
-         socket = new QUdpSocket(this);
-         connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
-         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-         socket->bind(_port);
+         socket->bind(protocolo::udp_port);
     }
 }
 
@@ -38,23 +39,23 @@ void Network::udpComu::enviaUnicoBroadcast(QString datos){
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-    socket->connectToHost(QHostAddress::Broadcast, _port);
+    socket->connectToHost(QHostAddress::Broadcast, protocolo::udp_port);
     QByteArray data;
     data.append(datos);
     qDebug() << "Sending: " << datos;
-    socket->writeDatagram(data, QHostAddress::Broadcast, _port);
+    socket->writeDatagram(data, QHostAddress::Broadcast, protocolo::udp_port);
 }
 void Network::udpComu::enviaMultipleBroadcast(QString datos){
     /*Para correr este broadcast es necesario correr el startbroadcast que crea un hilo para este metodo*/
     socket = new QUdpSocket(this);
     connect(socket, SIGNAL(readyRead()),    this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-    socket->connectToHost(QHostAddress::Broadcast, _port);
+    socket->connectToHost(QHostAddress::Broadcast, protocolo::udp_port);
     while(enviando_broadcast){
         QByteArray data;
         data.append(datos);
         qDebug() << "Sending: " << datos;
-        socket->writeDatagram(data, QHostAddress::Broadcast, _port);
+        socket->writeDatagram(data, QHostAddress::Broadcast, protocolo::udp_port);
     }
 }
 
@@ -86,15 +87,28 @@ void Network::udpComu::disconnected(){
     exit(0);
 }
 
-
-void Network::udpComu::setDirMulticast(QString dir_multicast){
-    this->dir_multicast = dir_multicast;
-}
-
 bool Network::udpComu::enviandoBroadcast(){
     return enviando_broadcast;
 }
+void Network::udpComu::readyReadMulticast(){
+    QByteArray data;
+    data.resize(multi_socket->pendingDatagramSize());
+   /* QHostAddress sender;
+    quint16 puerto;*/
+    multi_socket->readDatagram(data.data(), data.size());
+    qDebug() << "Multicast message: " << data;
+    emit incomingMulticastData(QString(data));
+}
 
-QString Network::udpComu::getDirMulticast(){
-    return this->dir_multicast;
+void Network::udpComu::joinMulticast(QString dir_multicast){
+    this->dir_multicast == QHostAddress(dir_multicast);
+    multi_socket = new QUdpSocket;
+    multi_socket->setSocketOption(QAbstractSocket::MulticastTtlOption, protocolo::udpTtl);
+    multi_socket->bind(QHostAddress::AnyIPv4, protocolo::multi_port, QUdpSocket::ShareAddress);
+    multi_socket->joinMulticastGroup(this->dir_multicast);
+    connect(multi_socket, SIGNAL(readyRead()), this, SLOT(readyReadMulticast()));
+}
+
+void Network::udpComu::sendMulticastMessage(QByteArray data){
+    multi_socket->writeDatagram(data.data(), data.size(), this->dir_multicast, protocolo::multi_port);
 }

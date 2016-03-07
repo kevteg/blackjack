@@ -31,6 +31,10 @@ public:
     static const int waiting_server_res  = 2;
     static const int playing             = 3;
     static const int waiting_game_to_start = 4;
+    static const int tcp_port              = 20060;
+    static const int udp_port              = 20050;
+    static const int multi_port            = 20070;
+    static const int udpTtl                = 1;
 
     static QByteArray generateJson(int codigo, QVector<QVariant> *info ){
            QJsonObject info_s;

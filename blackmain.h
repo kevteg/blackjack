@@ -25,10 +25,10 @@
 
 /*Opción cliente, opción servidor*/
 #define n_opc_ini 2
-#define tcp_port 20060
+
 #define _server 0
 #define _client 1
-#define dir_multicast "220.220.220.220"
+#define dir_multicast "239.255.43.21"
 namespace Ui {
     class blackmain;
     }
@@ -83,6 +83,7 @@ namespace Ui {
             void tcpMessagesFromServer(QString data);
             void loadGameInterface();
             void takeDisconnectedClientOut(int socket_des);
+            void multicastData(QString);
         private:
 
             Ui::blackmain            *ui;

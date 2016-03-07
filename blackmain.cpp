@@ -57,6 +57,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
                         ");
     com_udp = new Network::udpComu();
     connect(com_udp, SIGNAL(incomingData(QString, QString)), this, SLOT(processUdpData(QString, QString)));
+    connect(com_udp, SIGNAL(incomingMulticastData(QString)), this, SLOT(multicastData(QString)));
     connect(panel_principal, SIGNAL(returnToInit()), this, SLOT(goInitInterface()));
     conteo_server   = 0;
     conteo_clientes = 0;
@@ -121,7 +122,7 @@ void blackmain::serverSelected(){
         if(!inter_ser){
             inter_ser = new interfaz_servidor(this);
             servidor = new Network::server;
-            servidor->startServer(QHostAddress(local_ip), tcp_port);
+            servidor->startServer(QHostAddress(local_ip), protocolo::tcp_port);
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
             connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(tcpMessagesFromCLient(int, QString)));
             /*connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));*/
@@ -152,7 +153,7 @@ void blackmain::connectToTcpClient(QString dir_ip){
     com_udp->stopListeningBroadcast();
     qDebug() << "I am going to connect to " << dir_ip;
     ui->statusBar->showMessage(tr("Conectandose al servidor seleccionado"));
-    if(cliente->connectToHost(dir_ip, tcp_port)){
+    if(cliente->connectToHost(dir_ip, protocolo::tcp_port)){
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
         cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
@@ -267,7 +268,7 @@ void blackmain::tcpMessagesFromServer(QString data){
                 mySelf.setId(vector_datos->at(2).toInt());
                 mySelf.setName(inter_ini->getBarra()->toPlainText());
                 loadGameInterface();
-                cliente->write("hola graxia");
+                com_udp->joinMulticast(dir_multicast);
             }else{
                 goInitInterface();
                 ui->statusBar->showMessage(tr("No fuimos aceptados en el juego :'("));
@@ -275,6 +276,7 @@ void blackmain::tcpMessagesFromServer(QString data){
 
         }
         break;
+        //Esto es multicast
     case protocolo::cod_presentacion:
         if(current_state == protocolo::waiting_game_to_start){
 
@@ -284,10 +286,19 @@ void blackmain::tcpMessagesFromServer(QString data){
         break;
     }
 }
+void blackmain::multicastData(QString data){
+    qDebug() << "Incoming data from multicast: " << data;
+    if(current_state == protocolo::waiting_game_to_start)
+        com_udp->sendMulticastMessage("Client: it came");
+    else
+        com_udp->sendMulticastMessage("Server: it came");
+}
 
 void blackmain::sendPresentation(){
+    com_udp->joinMulticast(dir_multicast);
     //Agregar a myself a los jugadores
     //Dentro de la clase jugadores hace falta el panel de juego
+    qDebug() << "ENTRA";
     QVector <QVariant> respuesta;
     respuesta.append("Prueba");
     respuesta.append(1);
@@ -298,7 +309,8 @@ void blackmain::sendPresentation(){
     respuesta.append("Prueba3");
     respuesta.append(4);
     //Es necesario conectarse al grupo multicast en este punto
-    qDebug() << protocolo::generateJson(protocolo::cod_presentacion, &respuesta);
+    com_udp->sendMulticastMessage(protocolo::generateJson(protocolo::cod_presentacion, &respuesta));
+    //qDebug() << protocolo::generateJson(protocolo::cod_presentacion, &respuesta);
 }
 
 blackmain::~blackmain(){
