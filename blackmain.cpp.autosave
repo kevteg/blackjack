@@ -273,8 +273,6 @@ void blackmain::tcpMessagesFromServer(QString data){
                 loadGameInterface();
                 com_udp->joinMulticast(dir_multicast);
                 //unir mySelf a la lista de vector
-                mySelf->setId(conteo_clientes + 1);
-                mySelf->setName(inter_ini->getBarra()->toPlainText());
                 jugadores.append(mySelf);
             }else{
                 goInitInterface();
