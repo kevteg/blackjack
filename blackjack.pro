@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     panel_juego.cpp \
     serveritem.cpp \
     nplayer.cpp \
-    game.cpp
+    game.cpp \
+    carta.cpp
 
 HEADERS  += blackmain.h \
     image.h \
@@ -42,7 +43,8 @@ HEADERS  += blackmain.h \
     protocolo.h \
     serveritem.h \
     nplayer.h \
-    game.h
+    game.h \
+    carta.h
 
 FORMS    += blackmain.ui \
     interfaz_inicio.ui \

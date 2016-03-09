@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <QObject>
+#include <QDirIterator>
 #include "nplayer.h"
 #include "panel_juego.h"
 #include "protocolo.h"
@@ -27,7 +28,6 @@ private:
     QVector<carta> baraja;
     QVector<carta> cartas_usadas;
     QVector<nplayer*> *jugadores;
-
 };
 
 #endif // GAME_H

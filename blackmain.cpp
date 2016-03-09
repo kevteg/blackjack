@@ -266,7 +266,6 @@ void blackmain::takeDisconnectedClientOut(int socket_des){
                 out = true;
         }
     if(!conteo_clientes && game_as == protocolo::servidor){
-        qDebug() << "LLEGO";
         goInitInterface();
         windowMessage("Se fueron todos los clientes :'(", "¿Probamos de nuevo?");
     }
@@ -290,12 +289,6 @@ void blackmain::tcpMessagesFromServer(QString data){
                 goInitInterface();
                 ui->statusBar->showMessage(tr("No fuimos aceptados en el juego :'("));
             }
-
-        }
-        break;
-        //Esto es multicast
-    case protocolo::cod_presentacion:
-        if(current_state == protocolo::waiting_game_to_start){
 
         }
         break;
@@ -334,6 +327,7 @@ void blackmain::multicastData(QString data){
                 ngame = new game(game_as);
                 ngame->setPanel(panel_principal);
                 ngame->setJugadores(&jugadores);
+                ngame->beginGame();
             }
 
             break;
@@ -368,6 +362,7 @@ void blackmain::sendPresentation(){
     ngame = new game(game_as);
     ngame->setPanel(panel_principal);
     ngame->setJugadores(&jugadores);
+    ngame->beginGame();
     //Despues enviar el comienzo de ronda
 }
 void blackmain::dropAllPlayers(){
