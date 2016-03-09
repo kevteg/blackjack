@@ -19,11 +19,15 @@ public:
     void llenarBaraja();
     carta getRandomCard();
     carta getRandomUsedCard();
+    void beginRound();
+    void bonification(int);
+    bool prestamo;
 signals:
 
 public slots:
 private:
     int tipo_juego;
+    int round_count;
     panel_juego *panel;
     QVector<carta> baraja;
     QVector<carta> cartas_usadas;

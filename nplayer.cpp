@@ -41,3 +41,16 @@ void nplayer::playerGone(){
                          background: #757575;\
                          }");
 }
+
+bool nplayer::getBonificacion(){
+    return bonificacion;
+}
+void nplayer::setBonificacion(bool bonificacion){
+    this->bonificacion= bonificacion;
+}
+int  nplayer::getPuntos(){
+    return puntos;
+}
+void nplayer::setPuntos(int puntos){
+    this->puntos=puntos;
+}

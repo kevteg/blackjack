@@ -22,6 +22,10 @@ public:
     void    setSocketDes(int);
     int     getSocketDes();
     void    playerGone();
+    bool    getBonificacion();
+    void    setBonificacion(bool );
+    int     getPuntos();
+    void    setPuntos(int);
 private slots:
 signals:
 
@@ -30,6 +34,7 @@ private:
     int id;
     int socket_descriptor;
     int puntos;
+    bool bonificacion;
     QString name;
 };
 

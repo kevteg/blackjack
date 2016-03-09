@@ -23,7 +23,24 @@ void game::setJugadores(QVector<nplayer*> *jugadores){
 
 void game::beginGame(){
 //emit enviar presentación
+    prestamo=true;
     llenarBaraja();
+    beginRound();
+}
+
+void game::beginRound(){
+    if(cartas_usadas.count()<10){
+        //emit fin de juego
+        return;
+    }
+    if(cartas_usadas.count()>=10 && cartas_usadas.count()<25){
+        prestamo=false;
+    }
+    //emit comienzo de ronda
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
+        qDebug()<<"Turno de: "<<(*jug)->getId();
+    }
+
 }
 
 void game::llenarBaraja(){
@@ -46,4 +63,14 @@ carta game::getRandomUsedCard(){
     return carta_nueva;
 }
 
-
+void game::bonification(int id){
+    //recibe la señal de bonificacion
+   if(round_count>0){
+       for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
+           if((*jug)->getId()==id && ((*jug)->getPuntos())>0)
+               (*jug)->setBonificacion(true);
+       }
+   }
+   else
+       qDebug() << "Sin bonificación";
+}
