@@ -1,7 +1,7 @@
 #include "carta.h"
 
-carta::carta(QString nombre, QWidget *parent) : nombre(nombre), QObject(parent){
-    this->imagen = new image(QPixmap(":/imágenes/Imágenes/Baraja/" + nombre + ".jpg"), 200, 200);
+carta::carta(QString nombre) : nombre(nombre){
+   // this->imagen = new image(QPixmap(":/imágenes/Imágenes/Baraja/" + nombre + ".jpg"), 200, 200);
 }
 
 QString carta::getNombre(){

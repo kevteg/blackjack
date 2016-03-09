@@ -4,7 +4,7 @@ image::image(QPixmap pixmap, int w, int h, QWidget *parent) :QLabel(parent),  pi
     setScaledContents(true);
     setnPixmap(pixmap);
     setFixedSize(w,h);
-    show();
+    //show();
 }
 
 void image::resizeEvent(QResizeEvent *event) {

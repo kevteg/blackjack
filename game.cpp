@@ -23,25 +23,26 @@ void game::setJugadores(QVector<nplayer*> *jugadores){
 
 void game::beginGame(){
 //emit enviar presentación
-   // llenarBaraja();
+    llenarBaraja();
 }
 
 void game::llenarBaraja(){
     QDirIterator it(":/imágenes/Imágenes/Baraja", QDirIterator::Subdirectories);
     while (it.hasNext()) {
-        carta *carta_nueva = new carta(it.next().split(":/imágenes/Imágenes/Baraja")[1].split(".png")[0]);
+        carta carta_nueva(it.next().split(":/imágenes/Imágenes/Baraja")[1].split(".png")[0]);
         baraja.append(carta_nueva);
+        qDebug() << baraja.back().getNombre() << " card created";
    }
 }
 
-carta* game::getRandomCard(){
-    carta *carta_nueva = baraja.at(qrand() % (baraja.count() + 1));
+carta game::getRandomCard(){
+    carta carta_nueva = baraja.at(qrand() % (baraja.count() + 1));
     cartas_usadas.append(carta_nueva);
     return carta_nueva;
 }
 
-carta* game::getRandomUsedCard(){
-    carta *carta_nueva = baraja.at(qrand() % (baraja.count() + 1));
+carta game::getRandomUsedCard(){
+    carta carta_nueva = baraja.at(qrand() % (baraja.count() + 1));
     return carta_nueva;
 }
 

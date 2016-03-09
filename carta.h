@@ -1,13 +1,13 @@
 #ifndef CARTA_H
 #define CARTA_H
 #include "image.h"
-#include <QObject>
-class carta : QObject
+//#include <QObject>
+class carta
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     //Si se cuenta algo de la carta podria estar ese número aqui
-    carta(QString nombre, QWidget *parent = 0);
+    carta(QString nombre = "");
     QString getNombre();
     image *getImage();
 private:

@@ -17,16 +17,16 @@ public:
     void setJugadores(QVector<nplayer*> *jugadores);
     void beginGame();
     void llenarBaraja();
-    carta *getRandomCard();
-    carta *getRandomUsedCard();
+    carta getRandomCard();
+    carta getRandomUsedCard();
 signals:
 
 public slots:
 private:
     int tipo_juego;
     panel_juego *panel;
-    QVector<carta*> baraja;
-    QVector<carta*> cartas_usadas;
+    QVector<carta> baraja;
+    QVector<carta> cartas_usadas;
     QVector<nplayer*> *jugadores;
 };
 
