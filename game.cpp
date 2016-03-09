@@ -23,5 +23,5 @@ void game::setJugadores(QVector<nplayer*> *jugadores){
 
 
 void game::beginGame(){
-
+//emit enviar presentación
 }

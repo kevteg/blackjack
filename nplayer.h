@@ -2,7 +2,7 @@
 #define NPLAYER_H
 #include <QObject>
 #include <QWidget>
-#include "image.h"
+#include "carta.h"
 
 namespace Ui {
 class nplayer;
