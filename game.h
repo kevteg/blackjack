@@ -13,7 +13,7 @@ class game : public QObject
 public:
     explicit game(int tipo_juego, QObject *parent = 0);
     void setPanel(panel_juego *panel);
-    void setJugadores(panel_juego *panel);
+    void setJugadores(QVector<nplayer*> *jugadores);
     void beginGame();
 signals:
 
@@ -21,7 +21,7 @@ public slots:
 private:
     int tipo_juego;
     panel_juego *panel;
-    QVector<nplayer*> jugadores;
+    QVector<nplayer*> *jugadores;
 
 };
 

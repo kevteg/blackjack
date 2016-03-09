@@ -9,6 +9,7 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     inter_ser = NULL;
     cliente   = NULL;
     servidor  = NULL;
+    ngame     = NULL;
     ui->gridLayout->addWidget(inter_ini);
     panel_principal = new panel_juego();
     mySelf = new nplayer;
@@ -60,8 +61,6 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     connect(com_udp, SIGNAL(incomingData(QString, QString)), this, SLOT(processUdpData(QString, QString)));
     connect(com_udp, SIGNAL(incomingMulticastData(QString)), this, SLOT(multicastData(QString)));
     connect(panel_principal, SIGNAL(returnToInit()), this, SLOT(goInitInterface()));
-    conteo_server   = 0;
-    conteo_clientes = 0;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(countServerTime()));
     current_state = protocolo::nothing;
@@ -78,6 +77,7 @@ void blackmain::clientSelected(){
     if(inter_ini->getBarra()->toPlainText() != ""){
             qDebug() << "Blackjack will run as client";
             inter_ini->setVisible(false);
+            game_as = protocolo::cliente;
             if(!inter_cli){
                 inter_cli = new interfaz_cliente(this);
                 cliente = new Network::Client();
@@ -101,7 +101,8 @@ void blackmain::goInitInterface(){
         servidor->stopServer();
         conteo_server   = 0;
         conteo_clientes = 0;
-        timer->stop();
+        if(timer->isActive())
+            timer->stop();
     }if(inter_cli){
         inter_cli->setVisible(false);
         if(cliente->isConnected())
@@ -111,15 +112,23 @@ void blackmain::goInitInterface(){
         com_udp->detenerBroadcast();
     else if(cliente && cliente->isConnected())
         com_udp->stopListeningBroadcast();
-    if(panel_principal->isVisible())
+    if(panel_principal->isVisible()){
         panel_principal->setVisible(false);
+        panel_principal = new panel_juego;
+        connect(panel_principal, SIGNAL(returnToInit()), this, SLOT(goInitInterface()));
+        dropAllPlayers();
+    }
+
 }
 
 void blackmain::serverSelected(){
     if(inter_ini->getBarra()->toPlainText() != ""){
         qDebug() << "Blackjack will run as server";
         inter_ini->setVisible(false);
+        game_as = protocolo::servidor;
         current_state = protocolo::waiting_clients;
+        conteo_clientes = 0;
+        conteo_server = 0;
         if(!inter_ser){
             inter_ser = new interfaz_servidor(this);
             servidor = new Network::server;
@@ -163,9 +172,8 @@ void blackmain::connectToTcpClient(QString dir_ip){
         clientSelected();
 }
 
-void blackmain::noClients(){
-    QMessageBox::about(this, tr("No se conecto nadie :'("),
-                           tr("No se conectó ningún cliente. \n ¿Probamos de nuevo?"));
+void blackmain::windowMessage(QString tittle, QString message){
+    QMessageBox::about(this, tittle, message);
 }
 
 void blackmain::loadGameInterface(){
@@ -178,10 +186,8 @@ void blackmain::loadGameInterface(){
     }else if(inter_cli && inter_cli->isVisible()){
         inter_cli->setVisible(false);
         current_state = protocolo::waiting_game_to_start;
-        game_as = protocolo::cliente;
         ui->statusBar->showMessage(tr("¡Esperemos que lleguen los demás jugadores!"));
     }else if(inter_ser && inter_ser->isVisible()){
-        game_as = protocolo::servidor;
         inter_ser->setVisible(false);
         current_state = protocolo::playing;
         ui->statusBar->showMessage(tr("¡Comienza el juego!"));
@@ -193,10 +199,9 @@ void blackmain::loadGameInterface(){
     if(open){
         ui->gridLayout->addWidget(panel_principal);
         panel_principal->setVisible(true);
-
     }else{
         current_state = protocolo::nothing;
-        noClients();
+        windowMessage("No se conecto nadie :'(", "No se conectó ningún cliente. \n ¿Probamos de nuevo?");
         ui->statusBar->showMessage(tr(":'("));
     }
 }
@@ -253,11 +258,18 @@ void blackmain::takeDisconnectedClientOut(int socket_des){
     bool out = false;
     for(QVector <nplayer*>::iterator s_player = jugadores.begin(); s_player != jugadores.end() && !out; s_player++)
         if((*s_player)->getSocketDes() == socket_des){
-            inter_ser->outCLientFromList((*s_player));
+                inter_ser->outCLientFromList((*s_player));
+            if(current_state == protocolo::playing)
+                (*s_player)->playerGone();
             conteo_clientes--;
             if(jugadores.removeOne((*s_player)))
                 out = true;
         }
+    if(!conteo_clientes && game_as == protocolo::servidor){
+        qDebug() << "LLEGO";
+        goInitInterface();
+        windowMessage("Se fueron todos los clientes :'(", "¿Probamos de nuevo?");
+    }
 }
 
 void blackmain::tcpMessagesFromServer(QString data){
@@ -268,13 +280,11 @@ void blackmain::tcpMessagesFromServer(QString data){
         if(current_state == protocolo::waiting_server_res){ //If estado esperando respuesta
             if(vector_datos->at(1).toInt()){
                 direccion_multicast_ser = vector_datos->at(2).toString();
-                mySelf->setId(vector_datos->at(2).toInt());
+                mySelf->setId(vector_datos->at(3).toInt());
                 mySelf->setName(inter_ini->getBarra()->toPlainText());
                 loadGameInterface();
                 com_udp->joinMulticast(dir_multicast);
                 //unir mySelf a la lista de vector
-                mySelf->setId(conteo_clientes + 1);
-                mySelf->setName(inter_ini->getBarra()->toPlainText());
                 jugadores.append(mySelf);
             }else{
                 goInitInterface();
@@ -301,16 +311,29 @@ void blackmain::multicastData(QString data){
         case protocolo::cod_presentacion:
             if(game_as == protocolo::cliente){
                 int i = 0;
+                bool save = false;
+                int id;
+                QString name;
                 //El último es el servidor
                 for(QVector<QVariant>::iterator var = vec_datos->begin(); var != vec_datos->end(); var++){
-                    if(i == 1){
-                        jugadores.append(new nplayer());
-                        (jugadores.back())->setName(var->toString());
-                    }else if(i == 2)
-                        (jugadores.back())->setId(var->toInt());
+                    if(i == 1)
+                        name = var->toString();
+                    else if(i == 2){
+                        id = var->toInt();
+                        save = true;
+                    }
+                    if(save)
+                        if(id != mySelf->getId()){
+                            jugadores.append(new nplayer());
+                            (jugadores.back())->setName(name);
+                            (jugadores.back())->setId(id);
+                        }
+                    save = false;
                     i = (!i || i == 1)?(i + 1):(1);
                 }
-
+                ngame = new game(game_as);
+                ngame->setPanel(panel_principal);
+                ngame->setJugadores(&jugadores);
             }
 
             break;
@@ -342,7 +365,13 @@ void blackmain::sendPresentation(){
         respuesta.append((*jug)->getId());
     }
     com_udp->sendMulticastMessage(protocolo::generateJson(protocolo::cod_presentacion, &respuesta));
+    ngame = new game(game_as);
+    ngame->setPanel(panel_principal);
+    ngame->setJugadores(&jugadores);
     //Despues enviar el comienzo de ronda
+}
+void blackmain::dropAllPlayers(){
+    jugadores.clear();
 }
 
 blackmain::~blackmain(){

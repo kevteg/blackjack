@@ -2,6 +2,7 @@
 
 Network::client_thread::client_thread(int s_id, QObject *parent) : QThread(parent){
     this->socket_des = s_id;
+    avoid = false;
 }
 
 void Network::client_thread::run(){
@@ -23,12 +24,15 @@ void Network::client_thread::disconnected(){
     qDebug() << "Disconnected from " << this->socket_des;
     emit clientOut(this->socket_des);
     socket->deleteLater();
+    avoid = true;
     exit(0);
 }
 
 void Network::client_thread::closeConnection(){
-    socket->deleteLater();
-    exit(0);
+    if(!avoid){
+        socket->deleteLater();
+        exit(0);
+    }
 }
 
 void Network::client_thread::sendInformation(int socket_des, QByteArray datos){

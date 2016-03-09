@@ -42,12 +42,20 @@
      </item>
      <item>
       <widget class="QGroupBox" name="groupBox">
+       <property name="font">
+        <font>
+         <family>Ubuntu</family>
+        </font>
+       </property>
        <property name="title">
         <string/>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QHBoxLayout" name="players">
           <item>
            <layout class="QGridLayout" name="local"/>
           </item>

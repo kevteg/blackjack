@@ -6,6 +6,11 @@ nplayer::nplayer(QWidget *parent) :
     ui(new Ui::nplayer)
 {
     ui->setupUi(this);
+    ui->puntos->setText("0");
+    this->setStyleSheet("QGroupBox:border{none}\
+                         QGroupBox{\
+                         background: #B2EBF2;\
+                         }");
 }
 
 nplayer::~nplayer()
@@ -17,6 +22,7 @@ QString nplayer::getName(){
 }
 void nplayer::setName(QString name){
     this->name= name;
+    ui->nombre->setText(this->name);
 }
 void nplayer::setId(int id){
     this->id= id;
@@ -29,4 +35,9 @@ void nplayer::setSocketDes(int socket_descriptor){
 }
 int nplayer::getSocketDes(){
     return socket_descriptor;
+}
+void nplayer::playerGone(){
+    this->setStyleSheet("QGroupBox{\
+                         background: #757575;\
+                         }");
 }

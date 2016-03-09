@@ -23,7 +23,10 @@ void Network::server::incomingConnection(qintptr socketDescriptor){
 }
 
 void Network::server::stopServer(){
-    emit killAllConnections();
+    if(this->isListening()){
+        emit killAllConnections();
+        this->close();
+    }
 }
 void Network::server::clientOut(int socket_des){
     emit clientOutofServer(socket_des);

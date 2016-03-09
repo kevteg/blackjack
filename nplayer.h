@@ -21,6 +21,7 @@ public:
     int     getId();
     void    setSocketDes(int);
     int     getSocketDes();
+    void    playerGone();
 private slots:
 signals:
 

@@ -78,13 +78,14 @@ namespace Ui {
             void goInitInterface();
             void processUdpData(QString sender_ip, QString data);
             void countServerTime();
-            void noClients();
+            void windowMessage(QString tittle, QString message);
             void connectToTcpClient(QString dir_ip);
             void tcpMessagesFromCLient(int socket_des, QString data);
             void tcpMessagesFromServer(QString data);
             void loadGameInterface();
             void takeDisconnectedClientOut(int socket_des);
             void multicastData(QString);
+            void dropAllPlayers();
         private:
 
             Ui::blackmain            *ui;
@@ -105,6 +106,7 @@ namespace Ui {
             QString                   direccion_multicast_ser;
             int                       current_state;
             int                       game_as;
+            game                      *ngame;
 
 
     };

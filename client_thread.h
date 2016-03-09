@@ -41,6 +41,7 @@ namespace Network
         /*Número que da el so al socket*/
         int         socket_des;
         QTcpSocket *socket;
+        bool avoid;
 
     };
 }
