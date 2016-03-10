@@ -13,15 +13,6 @@ panel_juego::~panel_juego()
 {
     delete ui;
 }
-void panel_juego::dropPlayers(){
-   /* QLayoutItem *child;
-    while ((child = ui->local->takeAt(0)) != 0)  {
-        delete child;
-    }
-    while ((child = ui->externo->takeAt(0)) != 0)  {
-        delete child;
-    }*/
-}
 
 void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
     if(isPlayer)

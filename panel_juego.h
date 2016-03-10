@@ -17,7 +17,6 @@ public:
     ~panel_juego();
     void newPlayer();
     int getPlayersCount(bool is_server);
-    void dropPlayers();
     void addPlayer(bool isPlayer, nplayer *new_player);
 private slots:
     void goBack();
