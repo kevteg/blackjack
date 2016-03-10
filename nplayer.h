@@ -23,14 +23,14 @@ public:
     void    setSocketDes(int);
     int     getSocketDes();
     void    playerGone();
-<<<<<<< 423e18ac7279f2f4de2b67cafa488e675dd020db
+
     bool    getBonificacion();
     void    setBonificacion(bool );
     int     getPuntos();
     void    setPuntos(int);
-=======
+
     void    addCard(carta new_card);
->>>>>>> 21e0472f42ce709121271f09b28a645990c6098f
+
 private slots:
 signals:
 

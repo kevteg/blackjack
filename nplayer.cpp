@@ -9,8 +9,8 @@ nplayer::nplayer(QWidget *parent) :
     ui->puntos->setText("0");
     this->setStyleSheet("QGroupBox:border{none}\
                          QGroupBox{\
-                         background: #B2EBF2;\
-                         }");
+                         background: #333;}\
+                         QLabel{color: white}");
 }
 
 nplayer::~nplayer()
@@ -38,7 +38,7 @@ int nplayer::getSocketDes(){
 }
 void nplayer::playerGone(){
     this->setStyleSheet("QGroupBox{\
-                         background: #757575;\
+                         background: #BDBDBD;\
                          }");
 }
 
