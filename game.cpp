@@ -12,13 +12,11 @@ void game::setPanel(panel_juego *panel){
 void game::setJugadores(QVector<nplayer*> *jugadores){
     this->jugadores = jugadores;
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-        if((*jug) == (this->jugadores->back()) && tipo_juego == protocolo::servidor){
-            qDebug() << "I am the server" << (*jug)->getName();
+        if((*jug) == (this->jugadores->back()) && tipo_juego == protocolo::servidor)
             panel->addPlayer(true, (*jug));
-        }else if((*jug) == *this->jugadores->begin() && tipo_juego == protocolo::cliente){
-            qDebug() << "I am the client";
+        else if((*jug) == *this->jugadores->begin() && tipo_juego == protocolo::cliente)
             panel->addPlayer(true, (*jug));
-        }else
+        else
             panel->addPlayer(false, (*jug));
     }
 }

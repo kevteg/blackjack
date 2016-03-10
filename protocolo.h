@@ -70,46 +70,80 @@ public:
                     if(!i)
                         arreglo_interno["nombre"] = variable->toString();
                     else
-                        arreglo_interno["id_asignado"] = variable->toInt();
+                        arreglo_interno["id_asignado"] = QString::number(variable->toInt());
                     i++;
                     if(i == 2){
                         jugadores.append(arreglo_interno);
                         i = 0;
                     }
-                }
+                   }
                 info_s["jugadores"] = jugadores;
                 break;
             }
-            case cod_comienzo_ronda:
+            case cod_comienzo_ronda:{
                 info_s["codigo"]      = cod_comienzo_ronda;
+                QJsonObject arreglo_interno;
+                QJsonArray puntaje;
+                int i = 0;
+                for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
+                    for (int var = 0; var < arreglo_interno.count() && !i; ++var)
+                        arreglo_interno.remove((!var)?"nombre":"puntaje");
+                    if(!i)
+                        arreglo_interno["nombre"]  = variable->toString();
+                    else
+                        arreglo_interno["puntaje"] = variable->toInt();
+                    i++;
+                    if(i == 2){
+                        puntaje.append(arreglo_interno);
+                        i = 0;
+                    }
+                   }
                 break;
+            }
             case cod_bono:
                 info_s["codigo"]      = cod_bono;
-                info_s["bono"]        = info->at(0).toBool();
+                info_s["bono"]        = info->at(0).toBool()?"true":"false";
                 break;
             case cod_ofrecer_carta:
                 info_s["codigo"]      = cod_ofrecer_carta;
-                info_s["id"]          = info->at(0).toInt();
+                info_s["id"]          = QString::number(info->at(0).toInt());
                 break;
             case cod_respuesta_carta:
                 info_s["codigo"]      = cod_respuesta_carta;
-                info_s["jugar"]       = info->at(0).toBool();
+                info_s["jugar"]       = info->at(0).toBool()?"true":"false";
                 break;
             case cod_envio_carta:
                 info_s["codigo"]      = cod_envio_carta;
-                info_s["id"]          = info->at(0).toInt();
+                info_s["id"]          = QString::number(info->at(0).toInt());
                 info_s["carta"]       = info->at(1).toString();
                 break;
 
-            case cod_final_juego:
+            case cod_final_juego:{
                 info_s["codigo"]            = cod_final_juego;
-                info_s["rondas"]            = info->at(0).toInt();
-                info_s["cartas_jugadas"]    = info->at(1).toInt();
-                info_s["desempate"]         = info->at(3).toBool();
+                info_s["rondas"]            = QString::number(info->at(0).toInt());
+                QJsonObject arreglo_interno;
+                QJsonArray puntaje;
+                int i = 0;
+                for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
+                    for (int var = 0; var < arreglo_interno.count() && !i; ++var)
+                        arreglo_interno.remove((!var)?"id":"puntaje");
+                    if(!i)
+                        arreglo_interno["id"]  = variable->toString();
+                    else
+                        arreglo_interno["puntaje"] = variable->toInt();
+                    i++;
+                    if(i == 2){
+                        puntaje.append(arreglo_interno);
+                        i = 0;
+                    }
+                   }
+                info_s["cartas_jugadas"]    = QString::number(info->at(1).toInt());
+                info_s["desempate"]         = info->at(3).toBool()?"true":"false";
                 break;
+            }
             case cod_error:
                 info_s["codigo"]      = cod_error;
-                info_s["id"]          =info->at(0).toInt();
+                info_s["id"]          = QString::number(info->at(0).toInt());
                 break;
             default:
                 break;
@@ -157,7 +191,7 @@ public:
              case cod_comienzo_ronda:{
                  vector_datos->append(cod_comienzo_ronda);
                  QJsonArray arreglo_interno;
-                 arreglo_interno = trama.object()["jugadores"].toArray();
+                 arreglo_interno = trama.object()["puntaje"].toArray();
                  for(int var = 0; var < arreglo_interno.size(); var++){
                      QJsonObject obj = arreglo_interno[var].toObject();
                      for(int i = 0; i < obj.size(); i++){
@@ -170,23 +204,45 @@ public:
                  break;
                 }
              case cod_bono:
-
+                 vector_datos->append(cod_bono);
+                 vector_datos->append((trama.object()["bono"].toString() == "true")?true:false);
                  break;
              case cod_ofrecer_carta:
-
+                 vector_datos->append(cod_ofrecer_carta);
+                 vector_datos->append(trama.object()["id"].toString().toInt());
                  break;
              case cod_respuesta_carta:
-
+                 vector_datos->append(cod_respuesta_carta);
+                 vector_datos->append((trama.object()["jugar"].toString() == "true")?true:false);
                  break;
 
              case cod_envio_carta:
+                 vector_datos->append(cod_envio_carta);
+                 vector_datos->append(trama.object()["id"].toString().toInt());
+                 vector_datos->append(trama.object()["carta"].toString()); ////////////////////////////
                  break;
 
-             case cod_final_juego:
-
+             case cod_final_juego:{
+                 vector_datos->append(cod_final_juego);
+                 vector_datos->append(trama.object()["rondas"].toString().toInt());
+                 vector_datos->append(trama.object()["cartas_jugadas"].toString().toInt());
+                 QJsonArray arreglo_interno;
+                 arreglo_interno = trama.object()["puntaje"].toArray();
+                 for(int var = 0; var < arreglo_interno.size(); var++){
+                     QJsonObject obj = arreglo_interno[var].toObject();
+                     for(int i = 0; i < obj.size(); i++){
+                         if(!i)
+                           vector_datos->append(obj["id"].toString().toInt());
+                         else
+                           vector_datos->append(obj["puntaje"].toString().toInt());
+                     }
+                 }
+                 vector_datos->append(QString::number((trama.object()["desempate"].toString() == "true")?true:false));
                  break;
+             }
              case cod_error:
-
+                 vector_datos->append(cod_error);
+                 vector_datos->append(trama.object()["id"].toString().toInt());
                  break;
              default:
                  break;
