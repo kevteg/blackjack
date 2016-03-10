@@ -57,13 +57,13 @@
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="players">
           <item>
-           <layout class="QVBoxLayout" name="externo2"/>
+           <layout class="QVBoxLayout" name="local"/>
           </item>
           <item>
            <layout class="QVBoxLayout" name="externo1"/>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="local"/>
+           <layout class="QVBoxLayout" name="externo2"/>
           </item>
          </layout>
         </item>

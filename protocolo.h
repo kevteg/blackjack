@@ -34,6 +34,7 @@ public:
     static const int playing             = 3;
     static const int waiting_game_to_start = 4;
     static const int tcp_port              = 20060;
+    //static const int tcp_port              = 20000;
     static const int udp_port              = 20050;
     static const int multi_port            = 20070;
     static const int udpTtl                = 2;
@@ -45,8 +46,8 @@ public:
             case cod_saludo:
                 info_s["codigo"]   = cod_saludo;
                 info_s["nombre"]   = info->at(0).toString();
-                info_s["tiempo"]   = info->at(1).toInt();
-                info_s["espacios"] = info->at(2).toInt();
+                info_s["tiempo"]   = QString::number(info->at(1).toInt());
+                info_s["espacios"] = QString::number(info->at(2).toInt());
                 break;
             case cod_solicitud:
                 info_s["codigo"] = cod_solicitud;
@@ -54,9 +55,9 @@ public:
                 break;
             case cod_aceptacion:
                 info_s["codigo"]      = cod_aceptacion;
-                info_s["aceptado"]    = info->at(0).toBool();
+                info_s["aceptado"]    = (info->at(0).toBool())?"true":"false";
                 info_s["direccion"]   = info->at(1).toString();
-                info_s["id"]          = info->at(2).toInt();
+                info_s["id"]          = QString::number(info->at(2).toInt());
                 break;
             case cod_presentacion:{
                 QJsonArray jugadores;
@@ -125,8 +126,8 @@ public:
              case cod_saludo:
                  vector_datos->append(cod_saludo);
                  vector_datos->append(trama.object()["nombre"].toString());
-                 vector_datos->append(trama.object()["tiempo"].toInt());
-                 vector_datos->append(trama.object()["espacios"].toInt());
+                 vector_datos->append(trama.object()["tiempo"].toString().toInt());
+                 vector_datos->append(trama.object()["espacios"].toString().toInt());
                  break;
              case cod_solicitud:
                  vector_datos->append(cod_solicitud);
@@ -134,9 +135,9 @@ public:
                  break;
              case cod_aceptacion:
                  vector_datos->append(cod_aceptacion);
-                 vector_datos->append(trama.object()["aceptado"].toBool());
+                 vector_datos->append((trama.object()["aceptado"].toString() == "true")?true:false);
                  vector_datos->append(trama.object()["direccion"].toString());
-                 vector_datos->append(trama.object()["id"].toInt());
+                 vector_datos->append(trama.object()["id"].toString().toInt());
                  break;
              case cod_presentacion:{
                  vector_datos->append(cod_presentacion);

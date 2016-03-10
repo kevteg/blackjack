@@ -162,11 +162,17 @@ void blackmain::processUdpData(QString sender_ip, QString data){
 void blackmain::connectToTcpClient(QString dir_ip){
     com_udp->stopListeningBroadcast();
     qDebug() << "I am going to connect to " << dir_ip;
+    //Minimo dos
     ui->statusBar->showMessage(tr("Conectandose al servidor seleccionado"));
     if(cliente->connectToHost(dir_ip, protocolo::tcp_port)){
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
-        cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
+      //  for (int var1 = 0; var1 < 20; var1++) {
+      //      qDebug() << "Sending " << var1;
+            cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
+//        }
+
+        //qDebug() << "JSON: " << protocolo::generateJson(protocolo::cod_solicitud, &var);
         current_state = protocolo::waiting_server_res;
     }else
         clientSelected();
@@ -250,7 +256,7 @@ void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
             break;
         }
     }else{
-        ui->statusBar->showMessage(tr("Error fatal con la data"));
+        ui->statusBar->showMessage(tr("Error  con la data"));
         qDebug() << "Fatal error with client in socket " << socket_des << ". Data: " << data;
     }
 }

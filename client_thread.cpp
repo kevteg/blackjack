@@ -41,7 +41,7 @@ void Network::client_thread::sendInformation(int socket_des, QByteArray datos){
 }
 
 void Network::client_thread::readyRead(){
-    QString s(socket->readAll());
+    QString s = QString::fromStdString(socket->readAll().toStdString());
     qDebug() << "Received from client " << socket->socketDescriptor() << ": " << s;
     emit messageFromClient(this->socket_des, s);
 }

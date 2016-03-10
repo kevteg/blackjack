@@ -18,7 +18,7 @@ void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
     if(isPlayer)
         ui->local->addWidget(new_player);
     else{
-        if(ui->externo1->count() < 3)
+        if(ui->externo1->count() > 2)
             ui->externo1->addWidget(new_player);
         else
             ui->externo2->addWidget(new_player);
