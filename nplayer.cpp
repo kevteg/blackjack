@@ -9,7 +9,7 @@ nplayer::nplayer(QWidget *parent) :
     ui->puntos->setText("0");
     this->setStyleSheet("QGroupBox:border{none}\
                          QGroupBox{\
-                         background: #333;}\
+                         background: #2ecc71;}\
                          QLabel{color: white}");
 }
 
