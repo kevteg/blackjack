@@ -37,9 +37,26 @@ void game::beginRound(){
         prestamo=false;
     }
     //emit comienzo de ronda
-    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-        qDebug()<<"Turno de: "<<(*jug)->getId();
+    //Cartas iniciales
+    for(int i=0; i<2; i++){
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
+            qDebug()<<"Turno de: "<<(*jug)->getId();
+            if((*jug)==jugadores->back() && i==1)
+                break;
+            carta carta_nueva=getRandomCard();
+            //Enviar la carta
+        }
     }
+    //Pedir cartas extra
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
+        if((*jug)!= jugadores->back()){
+            while(true){
+                //enviar oferta de carte
+                //esperar respuesta de si quiere carta o no
+            }
+        }
+    }
+
 
 }
 
