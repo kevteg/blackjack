@@ -30,6 +30,7 @@ public:
     void    setPuntos(int);
 
     void    addCard(carta new_card);
+    void    isMe();
 
 private slots:
 signals:

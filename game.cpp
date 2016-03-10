@@ -40,7 +40,8 @@ void game::beginRound(){
     }
     //emit comienzo de ronda
     //Cartas iniciales
-   /* for(int i=0; i<2; i++){
+
+    /* for(int i=0; i<2; i++){
         for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
             qDebug()<<"Turno de: "<<(*jug)->getId();
             if((*jug)==jugadores->back() && i==1)
@@ -83,7 +84,7 @@ carta game::getRandomUsedCard(){
 }
 
 void game::bonification(int id){
-    //recibe la señal de bonificacion
+    //Luego de recibir la señal de bonificacion
    if(round_count){
        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
            if((*jug)->getId()==id && ((*jug)->getPuntos())>0)

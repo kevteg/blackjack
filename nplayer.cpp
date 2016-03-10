@@ -41,10 +41,16 @@ void nplayer::playerGone(){
                          background: #BDBDBD;\
                          }");
 }
+void nplayer::isMe(){
+    this->setStyleSheet("QGroupBox{\
+                            background: #239a55;}\
+                            QLabel{color: white}");
+}
 
 bool nplayer::getBonificacion(){
     return bonificacion;
 }
+
 void nplayer::setBonificacion(bool bonificacion){
     this->bonificacion= bonificacion;
 }
