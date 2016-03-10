@@ -6,7 +6,7 @@ panel_juego::panel_juego(QWidget *parent) : QWidget(parent), ui(new Ui::panel_ju
     ui->ir_atras->setIcon(QIcon(QPixmap(":/imágenes/Imágenes/back.png")));
     connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(goBack()));
     ui->groupBox->setStyleSheet("border: none");
-
+    players = 0;
 }
 
 panel_juego::~panel_juego()
@@ -15,10 +15,11 @@ panel_juego::~panel_juego()
 }
 
 void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
+    players++;
     if(isPlayer)
         ui->local->addWidget(new_player);
     else{
-        if(ui->externo1->count() > 2)
+        if(players > 3)
             ui->externo1->addWidget(new_player);
         else
             ui->externo2->addWidget(new_player);

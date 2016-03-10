@@ -24,6 +24,7 @@ private slots:
 signals:
     void returnToInit();
 private:
+    int players;
     Ui::panel_juego *ui;
 };
 
