@@ -98,6 +98,7 @@ public:
                         i = 0;
                     }
                    }
+                info_s["puntaje"] = puntaje;
                 break;
             }
             case cod_bono:
@@ -149,6 +150,7 @@ public:
                 break;
             }
             trama = QJsonDocument(info_s);
+            //return trama.toJson().simplified();
             return trama.toJson();
         }
     static QVector<QVariant>* JsonToVector(QByteArray datos){

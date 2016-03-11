@@ -22,43 +22,45 @@ void game::setJugadores(QVector<nplayer*> *jugadores){
 }
 
 void game::beginGame(){
-//emit enviar presentación
+//emit enviar comienzo de ronda
+
     prestamo = true;
     llenarBaraja();
     beginRound();
 }
 
 void game::beginRound(){
-    if(cartas_usadas.count()<10){
+    if(baraja.count() < 10){
         //emit fin de juego
-        return;
-    }
-    if(cartas_usadas.count()>=10 && cartas_usadas.count()<25){
-        prestamo=false;
-    }
-    //emit comienzo de ronda
-    //Cartas iniciales
 
-    /* for(int i=0; i<2; i++){
-        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-            qDebug()<<"Turno de: "<<(*jug)->getId();
-            if((*jug)==jugadores->back() && i==1)
-                break;
-            carta carta_nueva=getRandomCard();
-            //Enviar la carta
+    }else{
+
+        if(baraja.count() >= 10 && baraja.count() < 25){
+            prestamo = false;
         }
-    }
-    //Pedir cartas extra
-    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-        if((*jug)!= jugadores->back()){
-            while(true){
-                //enviar oferta de carte
-                //esperar respuesta de si quiere carta o no
+        //emit comienzo de ronda
+        //Cartas iniciales
+
+        /* for(int i=0; i<2; i++){
+            for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
+                qDebug()<<"Turno de: "<<(*jug)->getId();
+                if((*jug)==jugadores->back() && i==1)
+                    break;
+                carta carta_nueva=getRandomCard();
+                //Enviar la carta
             }
         }
-    }*/
+        //Pedir cartas extra
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
+            if((*jug)!= jugadores->back()){
+                while(true){
+                    //enviar oferta de carte
+                    //esperar respuesta de si quiere carta o no
+                }
+            }
+        }*/
 
-
+}
 }
 
 void game::llenarBaraja(){
@@ -91,4 +93,12 @@ void game::bonification(int id){
    }
    else
        qDebug() << "Sin bonificación";
+}
+void game::enviarRonda(){
+    QVector<QVariant> vector;
+    for (QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
+        vector.append((*jug)->getId());
+        vector.append((*jug)->getPuntos());
+    }
+    sendMulticast(protocolo::cod_comienzo_ronda, vector);
 }

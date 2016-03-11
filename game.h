@@ -22,7 +22,10 @@ public:
     void beginRound();
     void bonification(int);
     bool prestamo;
+    void enviarRonda();
 signals:
+    void sendUnicast(int, int, int, QVector<QVariant>);
+    void sendMulticast(int, QVector<QVariant>);
 
 public slots:
 private:

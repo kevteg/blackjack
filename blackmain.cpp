@@ -167,12 +167,9 @@ void blackmain::connectToTcpClient(QString dir_ip){
     if(cliente->connectToHost(dir_ip, protocolo::tcp_port)){
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
-      //  for (int var1 = 0; var1 < 20; var1++) {
-      //      qDebug() << "Sending " << var1;
-            cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
-//        }
 
-        //qDebug() << "JSON: " << protocolo::generateJson(protocolo::cod_solicitud, &var);
+        cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
+        qDebug() << "HERE: " << protocolo::generateJson(protocolo::cod_solicitud, &var);
         current_state = protocolo::waiting_server_res;
     }else
         clientSelected();
@@ -271,6 +268,7 @@ void blackmain::takeDisconnectedClientOut(int socket_des){
             if(jugadores.removeOne((*s_player)))
                 out = true;
         }
+    //Enviar a los otros clientes mensaje de error
     if(!conteo_clientes && game_as == protocolo::servidor){
         goInitInterface();
         windowMessage("Se fueron todos los clientes :'(", "¿Probamos de nuevo?");
@@ -371,6 +369,18 @@ void blackmain::sendPresentation(){
     ngame->beginGame();
     //Despues enviar el comienzo de ronda
 }
+
+void blackmain::sendMulticast(int cod, QVector<QVariant> vector){
+    com_udp->sendMulticastMessage(protocolo::generateJson(cod, &vector));
+}
+
+void blackmain::sendUnicast(int tipo, int socket_des, int cod, QVector<QVariant> vector){
+    if(tipo == protocolo::cliente)
+        cliente->write(protocolo::generateJson(cod, &vector));
+    else
+        servidor->sendToClient(socket_des, protocolo::generateJson(cod, &vector));
+}
+
 void blackmain::dropAllPlayers(){
     jugadores.clear();
 }
