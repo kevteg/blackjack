@@ -3,11 +3,14 @@
 Network::server::server(QObject *parent) : QTcpServer(parent){
 
 }
-void Network::server::startServer(QHostAddress adds, int port){
-    if(!this->listen(adds, port))
+bool Network::server::startServer(QHostAddress adds, int port){
+    bool started = true;
+    if(!this->listen(adds, port)){
        qDebug() << "Server couldn't start. " << adds << " adress:" << port;
-    else
+       started = false;
+    }else
        qDebug() << "Server started. Listening petitions at " << adds << ":" << port;
+    return started;
 }
 
 /*El socketdescriptor lo maneja el sistema operativo*/

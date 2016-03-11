@@ -16,7 +16,7 @@ namespace Network
         Q_OBJECT
     public:
         explicit server(QObject *parent = 0);
-        void     startServer(QHostAddress adds, int port);
+        bool startServer(QHostAddress adds, int port);
         void     stopServer();
         void     sendToClient(int socket_descriptor, QByteArray datos);
     signals:

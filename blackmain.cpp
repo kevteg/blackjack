@@ -132,7 +132,6 @@ void blackmain::serverSelected(){
         if(!inter_ser){
             inter_ser = new interfaz_servidor(this);
             servidor = new Network::server;
-            servidor->startServer(QHostAddress(local_ip), protocolo::tcp_port);
             connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
             connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(tcpMessagesFromCLient(int, QString)));
             /*connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));*/
@@ -140,6 +139,27 @@ void blackmain::serverSelected(){
             connect(inter_ser, SIGNAL(GameStart()), this, SLOT(loadGameInterface()));
         }else
             inter_ser->setVisible(true);
+        if(!servidor->startServer(QHostAddress(local_ip), protocolo::tcp_port)){
+            windowMessage("Error creando servidor", "¿Hay otro funcionando?");
+            game_as = protocolo::nothing;
+            current_state = protocolo::nothing;
+            goInitInterface();
+        }else{
+            ui->gridLayout->addWidget(inter_ser);
+            timer->start(1000);
+        }
+
+        /*if(!inter_ser){
+            inter_ser = new interfaz_servidor(this);
+            servidor = new Network::server;
+            servidor->startServer(QHostAddress(local_ip), protocolo::tcp_port);
+            connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
+            connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(tcpMessagesFromCLient(int, QString)));
+            /*connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));
+            connect(servidor, SIGNAL(clientOutofServer(int)), this, SLOT(takeDisconnectedClientOut(int)));
+            connect(inter_ser, SIGNAL(GameStart()), this, SLOT(loadGameInterface()));
+        }else
+            inter_ser->setVisible(true);*/
         ui->gridLayout->addWidget(inter_ser);
         timer->start(1000);
     }else
@@ -167,9 +187,8 @@ void blackmain::connectToTcpClient(QString dir_ip){
     if(cliente->connectToHost(dir_ip, protocolo::tcp_port)){
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
-
         cliente->write(protocolo::generateJson(protocolo::cod_solicitud, &var));
-        qDebug() << "HERE: " << protocolo::generateJson(protocolo::cod_solicitud, &var);
+        //qDebug() << "HERE: " << protocolo::generateJson(protocolo::cod_solicitud, &var);
         current_state = protocolo::waiting_server_res;
     }else
         clientSelected();
