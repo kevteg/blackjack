@@ -185,7 +185,7 @@ public:
                          if(!i)
                            vector_datos->append(obj["nombre"].toString());
                          else
-                           vector_datos->append(obj["id_asignado"].toInt());
+                           vector_datos->append(obj["id_asignado"].toString().toInt());
                      }
                  }
                  break;

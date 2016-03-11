@@ -14,7 +14,7 @@ void game::setJugadores(QVector<nplayer*> *jugadores){
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
         if((*jug) == (this->jugadores->back()) && tipo_juego == protocolo::servidor)
             panel->addPlayer(true, (*jug));
-        else if((*jug) == *this->jugadores->begin() && tipo_juego == protocolo::cliente)
+        else if((*jug) == (*this->jugadores->begin()) && tipo_juego == protocolo::cliente)
             panel->addPlayer(true, (*jug));
         else
             panel->addPlayer(false, (*jug));
