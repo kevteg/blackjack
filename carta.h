@@ -1,7 +1,7 @@
 #ifndef CARTA_H
 #define CARTA_H
 #include "image.h"
-//#include <QObject>
+#include <QDebug>
 class carta
 {
     //Q_OBJECT
@@ -10,9 +10,12 @@ public:
     carta(QString nombre = "");
     QString getNombre();
     image *getImage();
+    int getValue();
+    int operator+(carta);
 private:
     image *imagen;
     QString nombre;
+    int val;
 };
 
 #endif // CARTA_H

@@ -96,6 +96,8 @@ void blackmain::clientSelected(){
 void blackmain::goInitInterface(){
     current_state = protocolo::nothing;
     inter_ini->setVisible(true);
+    if(ngame)
+        ngame->stopGame();
     if(inter_ser){
         inter_ser->setVisible(false);
         servidor->stopServer();
@@ -148,18 +150,6 @@ void blackmain::serverSelected(){
             ui->gridLayout->addWidget(inter_ser);
             timer->start(1000);
         }
-
-        /*if(!inter_ser){
-            inter_ser = new interfaz_servidor(this);
-            servidor = new Network::server;
-            servidor->startServer(QHostAddress(local_ip), protocolo::tcp_port);
-            connect(inter_ser, SIGNAL(goInitInterface()), this, SLOT(goInitInterface()));
-            connect(servidor, SIGNAL(messageFromClient(int, QString)), this, SLOT(tcpMessagesFromCLient(int, QString)));
-            /*connect(servidor, SIGNAL(clientSocketId(int)), this, SLOT(setSocketIdToClient(int)));
-            connect(servidor, SIGNAL(clientOutofServer(int)), this, SLOT(takeDisconnectedClientOut(int)));
-            connect(inter_ser, SIGNAL(GameStart()), this, SLOT(loadGameInterface()));
-        }else
-            inter_ser->setVisible(true);*/
         ui->gridLayout->addWidget(inter_ser);
         timer->start(1000);
     }else
@@ -268,9 +258,14 @@ void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
                 servidor->sendToClient(socket_des, protocolo::generateJson(protocolo::cod_aceptacion, &respuesta));
             }
             break;
+        case protocolo::cod_respuesta_carta:
+            if(current_state == protocolo::playing)
+                ngame->cardReply(socket_des, vector_datos->at(1).toBool());
+            break;
         default:
             break;
         }
+
     }else{
         ui->statusBar->showMessage(tr("Error  con la data"));
         qDebug() << "Fatal error with client in socket " << socket_des << ". Data: " << data;
@@ -281,8 +276,12 @@ void blackmain::takeDisconnectedClientOut(int socket_des){
     for(QVector <nplayer*>::iterator s_player = jugadores.begin(); s_player != jugadores.end() && !out; s_player++)
         if((*s_player)->getSocketDes() == socket_des){
                 inter_ser->outCLientFromList((*s_player));
-            if(current_state == protocolo::playing)
+            if(current_state == protocolo::playing){
+                QVector<QVariant> var;
+                var.append((*s_player)->getId());
+                com_udp->sendMulticastMessage(protocolo::generateJson(protocolo::cod_error, &var));
                 (*s_player)->playerGone();
+            }
             conteo_clientes--;
             if(jugadores.removeOne((*s_player)))
                 out = true;
@@ -315,6 +314,12 @@ void blackmain::tcpMessagesFromServer(QString data){
 
         }
         break;
+    case protocolo::cod_ofrecer_carta:{
+        if(current_state == protocolo::playing){
+            ngame->cardOffering();
+        }
+    }
+        break;
     default:
         break;
     }
@@ -322,7 +327,6 @@ void blackmain::tcpMessagesFromServer(QString data){
 void blackmain::multicastData(QString data){
     qDebug() << "Incoming data from multicast"<< current_state<<": " << data;
     QVector<QVariant> *vec_datos = protocolo::JsonToVector(data.toUtf8());
-
     switch (vec_datos->at(0).toInt()) {
         case protocolo::cod_presentacion:
             if(game_as == protocolo::cliente){
@@ -348,8 +352,11 @@ void blackmain::multicastData(QString data){
                     i = (!i || i == 1)?(i + 1):(1);
                 }
                 ngame = new game(game_as);
+                connect(ngame, SIGNAL(sendMulticast(int,QVector<QVariant>)), this, SLOT(sendMulticast(int,QVector<QVariant>)));
+                connect(ngame, SIGNAL(sendUnicast(int,int,QVector<QVariant>, int)), this, SLOT(sendUnicast(int,int, QVector<QVariant>, int)));
                 ngame->setPanel(panel_principal);
                 ngame->setJugadores(&jugadores);
+                current_state = protocolo::playing;
                 ngame->beginGame();
             }
 
@@ -360,14 +367,28 @@ void blackmain::multicastData(QString data){
             }
             break;
         case protocolo::cod_envio_carta:
+            if(game_as == protocolo::cliente){
+                int id = vec_datos->at(1).toInt();
+                QString carta_id = vec_datos->at(2).toString();
+                ngame->cardInfo(id, carta(carta_id));
+            }
             break;
         case protocolo::cod_final_juego:
             break;
         case protocolo::cod_error:
+            if(game_as == protocolo::cliente && current_state == protocolo::playing){
+                bool out = false;
+                 for(QVector <nplayer*>::iterator jug = jugadores.begin(); jug != jugadores.end() && !out; jug++)
+                     if(vec_datos->at(1).toInt() == (*jug)->getId()){
+                         (*jug)->playerGone();
+                         out = true;
+                     }
+            }
             break;
         default:
             break;
     }
+
 }
 
 void blackmain::sendPresentation(){
@@ -383,6 +404,8 @@ void blackmain::sendPresentation(){
     }
     com_udp->sendMulticastMessage(protocolo::generateJson(protocolo::cod_presentacion, &respuesta));
     ngame = new game(game_as);
+    connect(ngame, SIGNAL(sendMulticast(int,QVector<QVariant>)), this, SLOT(sendMulticast(int,QVector<QVariant>)));
+    connect(ngame, SIGNAL(sendUnicast(int,int,QVector<QVariant>, int)), this, SLOT(sendUnicast(int,int, QVector<QVariant>, int)));
     ngame->setPanel(panel_principal);
     ngame->setJugadores(&jugadores);
     ngame->beginGame();
@@ -393,11 +416,12 @@ void blackmain::sendMulticast(int cod, QVector<QVariant> vector){
     com_udp->sendMulticastMessage(protocolo::generateJson(cod, &vector));
 }
 
-void blackmain::sendUnicast(int tipo, int socket_des, int cod, QVector<QVariant> vector){
+void blackmain::sendUnicast(int tipo, int cod, QVector<QVariant> vector, int socket_des){
     if(tipo == protocolo::cliente)
         cliente->write(protocolo::generateJson(cod, &vector));
     else
         servidor->sendToClient(socket_des, protocolo::generateJson(cod, &vector));
+    qDebug() << "Sending to client " << socket_des;
 }
 
 void blackmain::dropAllPlayers(){

@@ -15,12 +15,13 @@ panel_juego::~panel_juego()
 }
 
 void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
-    players++;
+
     if(isPlayer){
         new_player->isMe();
         ui->local->addWidget(new_player);
     }else{
-        if(players > 3)
+        players++;
+        if(players > 2)
             ui->externo1->addWidget(new_player);
         else
             ui->externo2->addWidget(new_player);

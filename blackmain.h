@@ -86,7 +86,7 @@ namespace Ui {
             void takeDisconnectedClientOut(int socket_des);
             void multicastData(QString);
             void sendMulticast(int cod, QVector<QVariant> vector);
-            void sendUnicast(int tipo, int socket_des, int cod, QVector<QVariant> vector);
+            void sendUnicast(int tipo, int cod, QVector<QVariant> vector, int socket_des = 0);
             void dropAllPlayers();
         private:
 

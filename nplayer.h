@@ -31,6 +31,8 @@ public:
 
     void    addCard(carta new_card);
     void    isMe();
+    int     getCartasSum();
+    int     getCardsCount();
 
 private slots:
 signals:
@@ -43,6 +45,9 @@ private:
     bool bonificacion;
     QString name;
     QVector<carta> cartas;
+    int x;
+    int y;
+    bool me;
 };
 
 #endif // NPLAYER_H

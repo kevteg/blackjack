@@ -2,6 +2,8 @@
 #define GAME_H
 
 #include <QObject>
+#include <QTimer>
+#include <QTime>
 #include <QDirIterator>
 #include "nplayer.h"
 #include "panel_juego.h"
@@ -23,18 +25,31 @@ public:
     void bonification(int);
     bool prestamo;
     void enviarRonda();
+    void cardInfo(int id, carta card);
+    void takeOffCard(carta ncarta);
+    void cardOffering();
+    void cardReply(int socket_des, bool resp);
+    void sendCardToTurnPlayer();
+    void stopGame();
 signals:
-    void sendUnicast(int, int, int, QVector<QVariant>);
+    void sendUnicast(int, int, QVector<QVariant>, int  var = 0);
     void sendMulticast(int, QVector<QVariant>);
 
 public slots:
+    void verifyStatus();
 private:
     int tipo_juego;
     int round_count;
+    int turno;
+    int status;
+    int ignore;
+    QTimer *vertimer;
     panel_juego *panel;
     QVector<carta> baraja;
     QVector<carta> cartas_usadas;
     QVector<nplayer*> *jugadores;
+    QVector <nplayer*>::iterator turn_player;
+    QVector <nplayer*>::iterator beginner_player;
 };
 
 #endif // GAME_H

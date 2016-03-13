@@ -34,10 +34,17 @@ public:
     static const int playing             = 3;
     static const int waiting_game_to_start = 4;
     static const int tcp_port              = 20060;
-    //static const int tcp_port              = 20000;
+    //Puertos
     static const int udp_port              = 20050;
     static const int multi_port            = 20070;
     static const int udpTtl                = 2;
+    //Estados del juego como servidor
+    static const int comienzo_ronda        = 0; //Para esperar los 30 segundos
+    static const int ronda                 = 1;
+    //Tiempos del juego
+    static const int tiempo_inicio_ronda   = 10*1000;
+    static const int tiempo_espera_carta   = 3*1000;
+
 
     static QByteArray generateJson(int codigo, QVector<QVariant> *info ){
            QJsonObject info_s;
