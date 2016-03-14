@@ -89,15 +89,15 @@ void game::verifyStatus(){
         vertimer->stop();
         vertimer->start(protocolo::tiempo_espera_carta);
         break;
-    }case protocolo::ronda:{
+    }case protocolo::ronda:{ //PONER SEGUNDA RONDA DE REPARTIR CARTAS
         if(!round_count){
             sendCardToTurnPlayer();
             if((*turn_player) != jugadores->back()){
-                if((*turn_player)->getCardsCount() == 2)
+                if((*turn_player)->getCardsCount() <= 2)
                     turn_player++;
             }else{
                 round_count++;
-                turn_player = ++beginner_player;
+                turn_player = beginner_player;
             }
         }else{
             //Ignore se usa por si un cliente no responde la solicitud después de 2 veces
