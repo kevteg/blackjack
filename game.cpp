@@ -84,19 +84,27 @@ void game::verifyStatus(){
     switch (status) {
     case protocolo::comienzo_ronda:{
         status = protocolo::ronda;
+        round_count = 0;
         qDebug() << "Time is up";
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+            (*jug)->resetCards();
         beginRound();
         vertimer->stop();
         vertimer->start(protocolo::tiempo_espera_carta);
         break;
     }case protocolo::ronda:{ //PONER SEGUNDA RONDA DE REPARTIR CARTAS
         if(!round_count){
-            sendCardToTurnPlayer();
+            if((*turn_player) != jugadores->back())
+                sendCardToTurnPlayer();
+            else if(!(*turn_player)->getCardsCount())
+                 sendCardToTurnPlayer();
+
             if((*turn_player) != jugadores->back()){
-                if((*turn_player)->getCardsCount() <= 2)
+                if((*turn_player)->getCardsCount())
                     turn_player++;
             }else{
-                round_count++;
+                if((*turn_player)->getCardsCount() && (*jugadores->begin())->getCardsCount() == 2)
+                  round_count++;
                 turn_player = beginner_player;
             }
         }else{
@@ -118,18 +126,20 @@ void game::verifyStatus(){
 
             QVector<QVariant> data;
             if((*turn_player) != jugadores->back()){
-                data.append((*turn_player)->getId());
-                emit sendUnicast(tipo_juego, protocolo::cod_ofrecer_carta, data, ((*turn_player)->getSocketDes()));
+                if((*turn_player)->getCartasSum() < 21 && jugadores->back()->getCartasSum() < 17){
+                    data.append((*turn_player)->getId());
+                    emit sendUnicast(tipo_juego, protocolo::cod_ofrecer_carta, data, ((*turn_player)->getSocketDes()));
+                }else
+                    renewRound();
             }else{
-                //No se si el servidor debe seguir recibiendo cartas hasta 17, era algo asi
-                //Mañana vemos
                 if(jugadores->back()->getCartasSum() < 17)
                     sendCardToTurnPlayer();
+                else
+                    renewRound();
 
                 turn_player = jugadores->begin();
                 ignore = 0;
             }
-
             ignore++;
         }
 
@@ -140,9 +150,17 @@ void game::verifyStatus(){
         break;
     }
 }
+ void game::renewRound(){
+     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+         (*jug)->sumUpPoints();
+     status = protocolo::comienzo_ronda;
+     vertimer->stop();
+     vertimer->start(protocolo::tiempo_inicio_ronda);
+ }
 
 void game::llenarBaraja(){
     QDirIterator it(":/imágenes/Imágenes/Baraja", QDirIterator::Subdirectories);
+    //Duplicar esta baraja
     while (it.hasNext()) {
         carta carta_nueva(it.next().split(":/imágenes/Imágenes/Baraja")[1].split(".png")[0].split("/")[1]);
         baraja.append(carta_nueva);
@@ -214,7 +232,6 @@ void game::bonification(int id){
 void game::cardInfo(int id, carta card){
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
         if(id == (*jug)->getId()){
-            qDebug() << "Found it";
             (*jug)->addCard(card);
             takeOffCard(card);
         }
@@ -224,6 +241,13 @@ void game::cardInfo(int id, carta card){
         receiveCard(card);*/
 }
 
+void game::setPlayersPoints(QVector<int> ids, QVector<int> points){
+    int i = 0;
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+        if((*jug)->getId() == ids.at[i])
+            (*jug)->setPuntos(points.at(i++));
+}
+
 //este método solo lo llaman los clientes para sacar cartas del mazo
 void game::takeOffCard(carta ncarta){
     bool out = false;
@@ -231,7 +255,6 @@ void game::takeOffCard(carta ncarta){
         if(baraja[var].getNombre() == ncarta.getNombre()){
             cartas_usadas.append(baraja.at(var));
             baraja.removeAt(var);
-            qDebug() << "CARD OUT: " << baraja.count();
         }
     }
 }

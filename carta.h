@@ -11,11 +11,13 @@ public:
     QString getNombre();
     image *getImage();
     int getValue();
+    int getCardInfo();
     int operator+(carta);
 private:
     image *imagen;
     QString nombre;
     int val;
+    int point_value;
 };
 
 #endif // CARTA_H

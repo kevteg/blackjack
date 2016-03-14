@@ -33,6 +33,8 @@ public:
     void    isMe();
     int     getCartasSum();
     int     getCardsCount();
+    int     sumUpPoints();
+    void    resetCards();
 
 private slots:
 signals:
@@ -45,6 +47,7 @@ private:
     bool bonificacion;
     QString name;
     QVector<carta> cartas;
+    QVector<int> puntajes;
     int x;
     int y;
     bool me;

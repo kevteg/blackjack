@@ -362,8 +362,16 @@ void blackmain::multicastData(QString data){
 
             break;
         case protocolo::cod_comienzo_ronda:
-            if(game_as == protocolo::cliente){
-
+            if(current_state == protocolo::playing && game_as == protocolo::cliente){
+                int i = 1;
+                QVector<int> ids;
+                QVector<int> points;
+                for(QVector<QVariant>::iterator var = vec_datos->begin(); var != vec_datos->end(); var++)
+                    if(!(i++ % 2))
+                        points.append(var->toInt());
+                    else
+                        ids.append(var->toInt());
+                ngame->setPlayersPoints(ids, points);
             }
             break;
         case protocolo::cod_envio_carta:
@@ -421,7 +429,6 @@ void blackmain::sendUnicast(int tipo, int cod, QVector<QVariant> vector, int soc
         cliente->write(protocolo::generateJson(cod, &vector));
     else
         servidor->sendToClient(socket_des, protocolo::generateJson(cod, &vector));
-    qDebug() << "Sending to client " << socket_des;
 }
 
 void blackmain::dropAllPlayers(){
