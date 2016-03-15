@@ -18,6 +18,7 @@ public:
     void newPlayer();
     int getPlayersCount(bool is_server);
     void addPlayer(bool isPlayer, nplayer *new_player);
+    void changeBarajaValue(int bar);
 private slots:
     void goBack();
 

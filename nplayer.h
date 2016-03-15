@@ -35,6 +35,7 @@ public:
     int     getCardsCount();
     int     sumUpPoints();
     void    resetCards();
+    void    setPuntosNoSum(int puntos);
 
 private slots:
 signals:

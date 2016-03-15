@@ -18,7 +18,6 @@ blackmain::blackmain(QWidget *parent) : QMainWindow(parent),ui(new Ui::blackmain
     foreach (QHostAddress item, dir)
         if(item.protocol() == QAbstractSocket::IPv4Protocol && item != QHostAddress::LocalHost && item != QHostAddress::LocalHostIPv6)
             local_ip = item.toString();
-
     /*QSS*/
     this->setStyleSheet("QMainWindow{\
                             background: rgb(39, 174, 96); \
@@ -363,17 +362,15 @@ void blackmain::multicastData(QString data){
             break;
         case protocolo::cod_comienzo_ronda:
             if(current_state == protocolo::playing && game_as == protocolo::cliente){
-                qDebug() << "VERIFICANDO";
                 int i = 0;
                 QVector<int> ids;
                 QVector<int> points;
                 for(QVector<QVariant>::iterator var = vec_datos->begin(); var != vec_datos->end(); var++){
-                    if(i){
+                    if(i)
                         if(!(i % 2))
                             points.append(var->toInt());
                         else
                             ids.append(var->toInt());
-                    }
                     i++;
                 }
                 ngame->setPlayersPoints(&ids, &points);

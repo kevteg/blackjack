@@ -50,35 +50,7 @@ void game::beginRound(){
 
         enviarRonda();
         turn_player = beginner_player;
-
-
-       /* qDebug() << (*jug)->getName() << (*jug)->getId();
-        jug++;
-        qDebug() << (*jug)->getName() << (*jug)->getId();
-        /
-        //emit comienzo de ronda
-        //Cartas iniciales
-
-         for(int i=0; i<2; i++){
-            for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-                qDebug()<<"Turno de: "<<(*jug)->getId();
-                if((*jug)==jugadores->back() && i==1)
-                    break;
-                carta carta_nueva=getRandomCard();
-                //Enviar la carta
-            }
-        }
-        //Pedir cartas extra
-        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-            if((*jug)!= jugadores->back()){
-                while(true){
-                    //enviar oferta de carte
-                    //esperar respuesta de si quiere carta o no
-                }
-            }
-        }*/
-
-}
+    }
 }
 void game::verifyStatus(){
     switch (status) {
@@ -86,8 +58,6 @@ void game::verifyStatus(){
         status = protocolo::ronda;
         round_count = 0;
         qDebug() << "Time is up";
-        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
-            (*jug)->resetCards();
         beginRound();
         vertimer->stop();
         vertimer->start(protocolo::tiempo_espera_carta);
@@ -109,6 +79,8 @@ void game::verifyStatus(){
             }
         }else{
             //Ignore se usa por si un cliente no responde la solicitud después de 2 veces
+            //Verificar los turnos
+            //Verificar el prestamo
             if(ignore == 2){
                 if((*turn_player) != jugadores->back())
                     turn_player++;
@@ -142,7 +114,7 @@ void game::verifyStatus(){
             }
             ignore++;
         }
-
+        panel->changeBarajaValue(baraja.count());
         qDebug() << "Baraja: " << baraja.count();
         break;
     }
@@ -152,22 +124,25 @@ void game::verifyStatus(){
 }
  void game::renewRound(){
      bool all_zero = true;
-     qDebug() << "1";
      for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
         if((*jug)->sumUpPoints())
             all_zero = false;
-     qDebug() << "2";
     if(all_zero){
         int high = 0;
-        QVector <nplayer*>::iterator highest_player;
-        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
-            if((*jug)->getCartasSum() < 21 && (*jug)->getCartasSum() > high){
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+            if((*jug)->getCartasSum() < 21 && (*jug)->getCartasSum() > high)
                 high = (*jug)->getCartasSum();
-                highest_player = jug;
-            }
-        }
-            (*highest_player)->setPuntos(1);
+
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+            if((*jug)->getCartasSum() == high)
+                (*jug)->setPuntos(1);
+
     }
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
+        qDebug() << "Sumatoria de cartas: " << (*jug)->getCartasSum() << "Puntos: " << (*jug)->getPuntos();
+    }
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+        (*jug)->resetCards();
      status = protocolo::comienzo_ronda;
      vertimer->stop();
      vertimer->start(protocolo::tiempo_inicio_ronda);
@@ -175,10 +150,10 @@ void game::verifyStatus(){
 
 void game::llenarBaraja(){
     QDirIterator it(":/imágenes/Imágenes/Baraja", QDirIterator::Subdirectories);
-    //Duplicar esta baraja
     while (it.hasNext()) {
-        carta carta_nueva(it.next().split(":/imágenes/Imágenes/Baraja")[1].split(".png")[0].split("/")[1]);
-        baraja.append(carta_nueva);
+        QString nom = it.next().split(":/imágenes/Imágenes/Baraja")[1].split(".png")[0].split("/")[1];
+        baraja.append(carta(nom));
+        baraja.append(carta(nom));
         qDebug() << baraja.back().getNombre() << " card created";
    }
 }
@@ -223,6 +198,7 @@ void game::cardReply(int socket_des, bool resp){
                 turn_player = jugadores->begin();
     }
 }
+
 void game::sendCardToTurnPlayer(){
     QVector<QVariant> data;
     data.append((*turn_player)->getId());
@@ -243,6 +219,7 @@ void game::bonification(int id){
    else
        qDebug() << "Sin bonificación";
 }
+
 //Método que recibe la carta que envia el servidor
 void game::cardInfo(int id, carta card){
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
@@ -251,6 +228,7 @@ void game::cardInfo(int id, carta card){
             takeOffCard(card);
         }
     }
+    panel->changeBarajaValue(baraja.count());
     /* Si la carta es para mi se puede hacer al mas
     if(id == (jugadores->begin())->getId())
         receiveCard(card);*/
@@ -261,8 +239,8 @@ void game::setPlayersPoints(QVector<int> *ids, QVector<int> *points){
     if(ids->count() && points->count())
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
         if(i < ids->count() && i < points->count())
-        if((*jug)->getId() == ids->at(i))
-            (*jug)->setPuntos(points->at(i++));
+            if((*jug)->getId() == ids->at(i))
+                (*jug)->setPuntosNoSum(points->at(i++));
         (*jug)->resetCards();
     }
 }

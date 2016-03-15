@@ -42,7 +42,7 @@ public:
     static const int comienzo_ronda        = 0; //Para esperar los 30 segundos
     static const int ronda                 = 1;
     //Tiempos del juego
-    static const int tiempo_inicio_ronda   = 10*1000;
+    static const int tiempo_inicio_ronda   = 5*1000;
     static const int tiempo_espera_carta   = 3*1000;
 
 

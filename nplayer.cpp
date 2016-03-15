@@ -97,16 +97,21 @@ int nplayer::sumUpPoints(){
     int sum = getCartasSum();
     if(sum == 21){
         puntos = 1;
-        int cval = cartas.begin()->getCardInfo();
-        for(QVector <carta>::iterator card = this->cartas.begin(); card != this->cartas.end() && in; card++)
-            if(card->getCardInfo() != cval)
-                in = false;
-        if(in)
-            puntos = 3;
-        else if(cartas.count() == 2 &&
-                ((!(*cartas.begin()).getCardInfo() && cartas.back().getCardInfo() == 1)
-                 || (!cartas.back().getCardInfo() && (*cartas.begin()).getCardInfo() == 1)))
-            puntos = 2;
+        int cval = cartas.begin()->getTypeValue();
+        if(cval == 3 || cval == 4){
+            for(QVector <carta>::iterator card = this->cartas.begin(); card != this->cartas.end() && in; card++){
+                qDebug() << card->getTypeValue() << " != " << cval;
+                if(card->getTypeValue() != cval)
+                    in = false;
+            }
+            if(in)
+                puntos = 3;
+        }
+        if(puntos == 1)
+            if(cartas.count() == 2 &&
+                    (((*cartas.begin()).getNumValue() == 2 && cartas.back().getNumValue() == 1)
+                     || (cartas.back().getNumValue() == 2 && (*cartas.begin()).getNumValue() == 1)))
+                puntos = 2;
         puntajes.append(puntos);
         this->puntos += puntos;
     }
@@ -125,6 +130,11 @@ void nplayer::resetCards(){
         //cartas.removeOne(*card);
     }
     cartas.clear();
+}
+void nplayer::setPuntosNoSum(int puntos){
+    this->puntos = puntos;
+    ui->suma->setText("S: 0");
+    ui->puntos->setText("P: " + QString::number(this->puntos));
 }
 
 void nplayer::setPuntos(int puntos){

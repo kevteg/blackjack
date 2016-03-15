@@ -19,6 +19,19 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
+        <widget class="QLabel" name="barajalabel">
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Baraja: 0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="header">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>

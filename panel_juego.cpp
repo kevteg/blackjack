@@ -28,6 +28,9 @@ void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
     }
 
 }
+void panel_juego::changeBarajaValue(int bar){
+    ui->barajalabel->setText("Baraja: " + QString::number(bar));
+}
 
 void panel_juego::goBack(){
     emit returnToInit();
