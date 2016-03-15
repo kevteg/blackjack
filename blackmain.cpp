@@ -363,15 +363,20 @@ void blackmain::multicastData(QString data){
             break;
         case protocolo::cod_comienzo_ronda:
             if(current_state == protocolo::playing && game_as == protocolo::cliente){
-                int i = 1;
+                qDebug() << "VERIFICANDO";
+                int i = 0;
                 QVector<int> ids;
                 QVector<int> points;
-                for(QVector<QVariant>::iterator var = vec_datos->begin(); var != vec_datos->end(); var++)
-                    if(!(i++ % 2))
-                        points.append(var->toInt());
-                    else
-                        ids.append(var->toInt());
-                ngame->setPlayersPoints(ids, points);
+                for(QVector<QVariant>::iterator var = vec_datos->begin(); var != vec_datos->end(); var++){
+                    if(i){
+                        if(!(i % 2))
+                            points.append(var->toInt());
+                        else
+                            ids.append(var->toInt());
+                    }
+                    i++;
+                }
+                ngame->setPlayersPoints(&ids, &points);
             }
             break;
         case protocolo::cod_envio_carta:

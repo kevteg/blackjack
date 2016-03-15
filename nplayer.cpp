@@ -92,8 +92,6 @@ int  nplayer::getPuntos(){
     return puntos;
 }
 int nplayer::sumUpPoints(){
-    x = 20;
-    y = 20;
     int puntos = 0;
     bool in = true;
     int sum = getCartasSum();
@@ -120,6 +118,8 @@ int nplayer::sumUpPoints(){
 
 
 void nplayer::resetCards(){
+    x = 20;
+    y = 20;
     for(QVector <carta>::iterator card = this->cartas.begin(); card != this->cartas.end(); card++){
         card->getImage()->hide();
         //cartas.removeOne(*card);

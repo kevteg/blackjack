@@ -32,7 +32,7 @@ public:
     void sendCardToTurnPlayer();
     void stopGame();
     void renewRound();
-    void setPlayersPoints(QVector<int> ids, QVector<int> points);
+    void setPlayersPoints(QVector<int> *ids, QVector<int> *points);
 signals:
     void sendUnicast(int, int, QVector<QVariant>, int  var = 0);
     void sendMulticast(int, QVector<QVariant>);

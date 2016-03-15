@@ -94,9 +94,9 @@ public:
                 int i = 0;
                 for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
                     for (int var = 0; var < arreglo_interno.count() && !i; ++var)
-                        arreglo_interno.remove((!var)?"nombre":"puntaje");
+                        arreglo_interno.remove((!var)?"id":"puntaje");
                     if(!i)
-                        arreglo_interno["nombre"]  = variable->toString();
+                        arreglo_interno["id"]  = variable->toString();
                     else
                         arreglo_interno["puntaje"] = variable->toInt();
                     i++;

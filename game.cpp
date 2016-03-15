@@ -151,8 +151,23 @@ void game::verifyStatus(){
     }
 }
  void game::renewRound(){
+     bool all_zero = true;
+     qDebug() << "1";
      for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
-         (*jug)->sumUpPoints();
+        if((*jug)->sumUpPoints())
+            all_zero = false;
+     qDebug() << "2";
+    if(all_zero){
+        int high = 0;
+        QVector <nplayer*>::iterator highest_player;
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
+            if((*jug)->getCartasSum() < 21 && (*jug)->getCartasSum() > high){
+                high = (*jug)->getCartasSum();
+                highest_player = jug;
+            }
+        }
+            (*highest_player)->setPuntos(1);
+    }
      status = protocolo::comienzo_ronda;
      vertimer->stop();
      vertimer->start(protocolo::tiempo_inicio_ronda);
@@ -241,22 +256,25 @@ void game::cardInfo(int id, carta card){
         receiveCard(card);*/
 }
 
-void game::setPlayersPoints(QVector<int> ids, QVector<int> points){
+void game::setPlayersPoints(QVector<int> *ids, QVector<int> *points){
     int i = 0;
-    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
-        if((*jug)->getId() == ids.at[i])
-            (*jug)->setPuntos(points.at(i++));
+    if(ids->count() && points->count())
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
+        if(i < ids->count() && i < points->count())
+        if((*jug)->getId() == ids->at(i))
+            (*jug)->setPuntos(points->at(i++));
+        (*jug)->resetCards();
+    }
 }
 
 //este método solo lo llaman los clientes para sacar cartas del mazo
 void game::takeOffCard(carta ncarta){
     bool out = false;
-    for(int var = 0; var < baraja.count() && !out; var++) {
+    for(int var = 0; var < baraja.count() && !out; var++)
         if(baraja[var].getNombre() == ncarta.getNombre()){
             cartas_usadas.append(baraja.at(var));
             baraja.removeAt(var);
         }
-    }
 }
 void game::stopGame(){
     vertimer->stop();
