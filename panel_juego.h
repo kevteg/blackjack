@@ -19,6 +19,7 @@ public:
     int getPlayersCount(bool is_server);
     void addPlayer(bool isPlayer, nplayer *new_player);
     void changeBarajaValue(int bar);
+    void changeRondaValue();
 private slots:
     void goBack();
 
@@ -27,6 +28,7 @@ signals:
 private:
     int players;
     Ui::panel_juego *ui;
+    int rounds;
 };
 
 #endif // PANEL_JUEGO_H

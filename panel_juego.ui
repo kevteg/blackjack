@@ -23,11 +23,24 @@
          <property name="font">
           <font>
            <family>Ubuntu</family>
-           <pointsize>12</pointsize>
+           <pointsize>14</pointsize>
           </font>
          </property>
          <property name="text">
           <string>Baraja: 0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="roundlabel">
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Round: 0</string>
          </property>
         </widget>
        </item>

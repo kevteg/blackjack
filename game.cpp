@@ -29,7 +29,6 @@ void game::beginGame(){
 //emit enviar comienzo de ronda
     llenarBaraja();
     if(tipo_juego == protocolo::servidor){
-        prestamo = round_count?true:false;
         status  = protocolo::comienzo_ronda;
         qDebug() << "Begin game";
         vertimer->start(protocolo::tiempo_inicio_ronda);
@@ -43,9 +42,11 @@ void game::beginGame(){
 void game::beginRound(){
     if(baraja.count() < 10){
         //emit fin de juego
+        status = protocolo::fin;
+        vertimer->stop();
     }else{
         qDebug() << "count: " << baraja.count();
-        if(baraja.count() < 25)
+        if(baraja.count() >= 10 && baraja.count() <= 25)
             prestamo = false;
 
         enviarRonda();
@@ -58,11 +59,13 @@ void game::verifyStatus(){
         status = protocolo::ronda;
         round_count = 0;
         qDebug() << "Time is up";
+        prestamo = true;
         beginRound();
         vertimer->stop();
         vertimer->start(protocolo::tiempo_espera_carta);
+        panel->changeRondaValue();
         break;
-    }case protocolo::ronda:{ //PONER SEGUNDA RONDA DE REPARTIR CARTAS
+    }case protocolo::ronda:{
         if(!round_count){
             if((*turn_player) != jugadores->back())
                 sendCardToTurnPlayer();
@@ -73,11 +76,14 @@ void game::verifyStatus(){
                 if((*turn_player)->getCardsCount())
                     turn_player++;
             }else{
-                if((*turn_player)->getCardsCount() && (*jugadores->begin())->getCardsCount() == 2)
-                  round_count++;
+                if((*turn_player)->getCardsCount() && (*jugadores->begin())->getCardsCount() == 2){
+                    if(!prestamo)
+                        sendCardToTurnPlayer();
+                    round_count++;
+                }
                 turn_player = beginner_player;
             }
-        }else{
+        }else if(prestamo){
             //Ignore se usa por si un cliente no responde la solicitud después de 2 veces
             //Verificar los turnos
             //Verificar el prestamo
@@ -99,8 +105,10 @@ void game::verifyStatus(){
             QVector<QVariant> data;
             if((*turn_player) != jugadores->back()){
                 if((*turn_player)->getCartasSum() < 21 && jugadores->back()->getCartasSum() < 17){
+
                     data.append((*turn_player)->getId());
                     emit sendUnicast(tipo_juego, protocolo::cod_ofrecer_carta, data, ((*turn_player)->getSocketDes()));
+
                 }else
                     renewRound();
             }else{
@@ -113,6 +121,8 @@ void game::verifyStatus(){
                 ignore = 0;
             }
             ignore++;
+        }else if(!prestamo){
+            renewRound();
         }
         panel->changeBarajaValue(baraja.count());
         qDebug() << "Baraja: " << baraja.count();
@@ -243,6 +253,7 @@ void game::setPlayersPoints(QVector<int> *ids, QVector<int> *points){
                 (*jug)->setPuntosNoSum(points->at(i++));
         (*jug)->resetCards();
     }
+    panel->changeRondaValue();
 }
 
 //este método solo lo llaman los clientes para sacar cartas del mazo

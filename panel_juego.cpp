@@ -7,6 +7,7 @@ panel_juego::panel_juego(QWidget *parent) : QWidget(parent), ui(new Ui::panel_ju
     connect(ui->ir_atras, SIGNAL(clicked(bool)), this, SLOT(goBack()));
     ui->groupBox->setStyleSheet("border: none");
     players = 0;
+    rounds  = 0;
 }
 
 panel_juego::~panel_juego()
@@ -15,7 +16,6 @@ panel_juego::~panel_juego()
 }
 
 void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
-
     if(isPlayer){
         new_player->isMe();
         ui->local->addWidget(new_player);
@@ -28,8 +28,14 @@ void panel_juego::addPlayer(bool isPlayer, nplayer *new_player){
     }
 
 }
+
 void panel_juego::changeBarajaValue(int bar){
     ui->barajalabel->setText("Baraja: " + QString::number(bar));
+}
+
+void panel_juego::changeRondaValue(){
+    rounds++;
+    ui->roundlabel->setText("Rounds: " + QString::number(rounds));
 }
 
 void panel_juego::goBack(){
