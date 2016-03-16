@@ -112,7 +112,8 @@ public:
             }
             case cod_bono:
                 info_s["codigo"]      = cod_bono;
-                info_s["bono"]        = info->at(0).toBool()?"true":"false";
+                info_s["id"]          = QString::number(info->at(0).toInt());
+                info_s["bono"]        = info->at(1).toBool()?"true":"false";
                 break;
             case cod_ofrecer_carta:
                 info_s["codigo"]      = cod_ofrecer_carta;
@@ -216,6 +217,7 @@ public:
                 }
              case cod_bono:
                  vector_datos->append(cod_bono);
+                 vector_datos->append(trama.object()["id"].toString().toInt());
                  vector_datos->append((trama.object()["bono"].toString() == "true")?true:false);
                  break;
              case cod_ofrecer_carta:
@@ -230,7 +232,7 @@ public:
              case cod_envio_carta:
                  vector_datos->append(cod_envio_carta);
                  vector_datos->append(trama.object()["id"].toString().toInt());
-                 vector_datos->append(trama.object()["carta"].toString()); ////////////////////////////
+                 vector_datos->append(trama.object()["carta"].toString());
                  break;
 
              case cod_final_juego:{
