@@ -46,6 +46,8 @@ public:
     //Tiempos del juego
     static const int tiempo_inicio_ronda   = 5*1000;
     static const int tiempo_espera_carta   = 1*1000;
+    static const int gray                  = 0;
+    static const int white                 = 1;
 
 
     static QByteArray generateJson(int codigo, QVector<QVariant> *info ){
