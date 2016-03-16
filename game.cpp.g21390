@@ -39,8 +39,23 @@ void game::beginGame(){
         //jugadores->count(); y tambien tengo el numero de la ronda con
         //panel->getRondaValue(); ahora pensemos
         //ya pense
-        beginner_player = jugadores->begin();
-
+        int ronda=panel->getRondaValue();
+        if(!ronda)
+            beginner_player = jugadores->begin();
+        else{
+            while(ronda > jugadores->count()){
+                ronda -= (jugadores->count() - 1); //-1 del servidor
+            }
+            //Tengo que recorrer el vector de jugadores
+            //Los id empiezan en 1 i think
+            for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
+                if((*jug)->getId()  ==  ronda+1)
+                    beginner_player =   jug;
+            }
+            if(beginner_player = jugadores->back())
+                beginner_player = jugadores->begin();
+        }
+        //
     }else{
 
     }
@@ -55,29 +70,10 @@ void game::beginRound(){
         qDebug() << "count: " << baraja.count();
         if(baraja.count() >= 10 && baraja.count() <= 25)
             prestamo = false;
-        }
 
-        int ronda=panel->getRondaValue();
-        qDebug() << "RONDA: "<< ronda;
-        if(!ronda)
-            beginner_player = jugadores->begin();
-        else{
-            while(ronda >= jugadores->count()){
-                ronda -= (jugadores->count()-1);
-                qDebug() << "RONDA WHILE: "<< ronda;
-            }
-            //Tengo que recorrer el vector de jugadores
-            //Los id empiezan en 1 i think
-            for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
-                if((*jug)->getId()  ==  ronda+1)
-                    beginner_player =   jug;
-            }
-            if(beginner_player  ==  &jugadores->back())
-                beginner_player  =  jugadores->begin();
-        }
         enviarRonda();
         turn_player = beginner_player;
-
+    }
 }
 void game::verifyStatus(){
     switch (status) {
@@ -107,7 +103,7 @@ void game::verifyStatus(){
                         sendCardToTurnPlayer();
                     round_count++;
                 }
-                turn_player = jugadores->begin();
+                turn_player = beginner_player;
             }
         }else if(prestamo){
             //Ignore se usa por si un cliente no responde la solicitud después de 2 veces
@@ -135,10 +131,8 @@ void game::verifyStatus(){
                     data.append((*turn_player)->getId());
                     emit sendUnicast(tipo_juego, protocolo::cod_ofrecer_carta, data, ((*turn_player)->getSocketDes()));
 
-                }else{
-                    if(jugadores->back()->getCartasSum() >= 17)
-                         renewRound();
-                }
+                }else
+                    renewRound();
             }else{
                 if(jugadores->back()->getCartasSum() < 17)
                     sendCardToTurnPlayer();
@@ -149,7 +143,7 @@ void game::verifyStatus(){
                 ignore = 0;
             }
             ignore++;
-        }else if(!prestamo && jugadores->back()->getCartasSum() == 2){
+        }else if(!prestamo){
             renewRound();
         }
         panel->changeBarajaValue(baraja.count());

@@ -20,6 +20,7 @@ public:
     void addPlayer(bool isPlayer, nplayer *new_player);
     void changeBarajaValue(int bar);
     void changeRondaValue();
+    int getRondaValue();
 private slots:
     void goBack();
 

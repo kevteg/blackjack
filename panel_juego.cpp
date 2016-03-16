@@ -38,6 +38,10 @@ void panel_juego::changeRondaValue(){
     ui->roundlabel->setText("Rounds: " + QString::number(rounds));
 }
 
+int panel_juego::getRondaValue(){
+    return rounds;
+}
+
 void panel_juego::goBack(){
     emit returnToInit();
 }
