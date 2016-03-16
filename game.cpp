@@ -39,6 +39,7 @@ void game::beginGame(){
         //jugadores->count(); y tambien tengo el numero de la ronda con
         //panel->getRondaValue(); ahora pensemos
         //ya pense
+        //Bitacora de a yo
         beginner_player = jugadores->begin();
 
     }else{
@@ -136,20 +137,21 @@ void game::verifyStatus(){
                     emit sendUnicast(tipo_juego, protocolo::cod_ofrecer_carta, data, ((*turn_player)->getSocketDes()));
 
                 }else{
-                    if(jugadores->back()->getCartasSum() >= 17)
+                    if((jugadores->back()->getCartasSum() >= 17)  &&  (*jugadores->begin())->getCartasSum() >= 17 )
                          renewRound();
                 }
             }else{
-                if(jugadores->back()->getCartasSum() < 17)
+                if(jugadores->back()->getCartasSum() < 17 && (*jugadores->begin())->getCartasSum() >= 17)
                     sendCardToTurnPlayer();
-                else
-                    renewRound();
-
+                else{
+                    if((*jugadores->begin())->getCartasSum() >= 17)
+                         renewRound();
+                }
                 turn_player = jugadores->begin();
                 ignore = 0;
             }
             ignore++;
-        }else if(!prestamo && jugadores->back()->getCartasSum() == 2){
+        }else if(!prestamo && jugadores->back()->getCartasSum() == 2 && (*jugadores->begin())->getCartasSum()   ==  2){
             renewRound();
         }
         panel->changeBarajaValue(baraja.count());
