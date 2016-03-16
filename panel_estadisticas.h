@@ -16,7 +16,7 @@ class panel_estadisticas : public QWidget
 
 public:
     explicit panel_estadisticas(QWidget *parent = 0);
-    void setItems(QVector<nplayer *> *jugadores);
+    void setItems(QVector<nplayer *> *jugadores, int cartas, int rounds);
     ~panel_estadisticas();
 
 private:

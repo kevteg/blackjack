@@ -35,7 +35,7 @@ void panel_juego::changeBarajaValue(int bar){
 
 void panel_juego::changeRondaValue(){
     rounds++;
-    ui->roundlabel->setText("Rounds: " + QString::number(rounds));
+    ui->roundlabel->setText("Round: " + QString::number(rounds));
 }
 
 int panel_juego::getRondaValue(){

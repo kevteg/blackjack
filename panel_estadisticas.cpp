@@ -15,7 +15,7 @@ void panel_estadisticas::setItems(QVector<nplayer *> *jugadores, int cartas, int
         i = !i?protocolo::gray:protocolo::white;
     }
     this->ui->cartas->setText("Cartas usadas: " + cartas);
-    this->ui->cartas->setText("Rounds usadas: " + rounds);
+    this->ui->rounds->setText("Rounds: " + rounds);
 }
 
 panel_estadisticas::~panel_estadisticas()
