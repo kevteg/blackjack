@@ -33,6 +33,7 @@ public:
     void stopGame();
     void renewRound();
     void setPlayersPoints(QVector<int> *ids, QVector<int> *points);
+    void finishGame();
 signals:
     void sendUnicast(int, int, QVector<QVariant>, int  var = 0);
     void sendMulticast(int, QVector<QVariant>);

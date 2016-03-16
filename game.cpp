@@ -301,9 +301,12 @@ void game::stopGame(){
 
 void game::enviarRonda(){
     QVector<QVariant> vector;
-    for (QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
+    for(QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
         vector.append((*jug)->getId());
         vector.append((*jug)->getPuntos());
     }
     emit sendMulticast(protocolo::cod_comienzo_ronda, vector);
+}
+void game::finishGame(){
+
 }
