@@ -65,7 +65,6 @@ void game::beginRound(){
         else{
             while(ronda >= jugadores->count()){
                 ronda -= (jugadores->count()-1);
-                qDebug() << "RONDA WHILE: "<< ronda;
             }
             //Tengo que recorrer el vector de jugadores
             //Los id empiezan en 1 i think
@@ -94,26 +93,26 @@ void game::verifyStatus(){
         break;
     }case protocolo::ronda:{
         if(!round_count){
-            if((*turn_player) != jugadores->back())
+            if((*turn_player) != jugadores->back() && (*turn_player)->getCardsCount()<2)
                 sendCardToTurnPlayer();
-            else if(!(*turn_player)->getCardsCount())
+            else if(!(*turn_player)->getCardsCount() && (*turn_player)->getCardsCount()<2)
                  sendCardToTurnPlayer();
 
             if((*turn_player) != jugadores->back()){
                 if((*turn_player)->getCardsCount())
                     turn_player++;
             }else{
-                if((*turn_player)->getCardsCount() && (*jugadores->begin())->getCardsCount() == 2){
+                if((*turn_player)->getCardsCount() && (*jugadores->begin())->getCardsCount() == 2 && (*turn_player)->getCartasSum() <= 21){
                     if(!prestamo)
                         sendCardToTurnPlayer();
                     round_count++;
                 }
-                turn_player = jugadores->begin();
+                turn_player = jugadores->begin();  //ESTE NO ES
+             //   if((*jugadores->begin())->getCardsCount() == 2 && (*beginner_player)->getCardsCount() == 2 && round_count)
+               //     turn_player=beginner_player;
             }
         }else if(prestamo){
             //Ignore se usa por si un cliente no responde la solicitud después de 2 veces
-            //Verificar los turnos
-            //Verificar el prestamo
             if(ignore == 2){
                 if((*turn_player) != jugadores->back())
                     turn_player++;
@@ -121,11 +120,13 @@ void game::verifyStatus(){
                     turn_player = jugadores->begin();
                 ignore = 0;
             }
-            if((*turn_player)->getCartasSum() >= 21){
+            if((*turn_player)->getCartasSum() >= 21 || (!prestamo && (*turn_player)->getCardsCount() == 2)){
                 if((*turn_player) != jugadores->back())
                     turn_player++;
-                else
+                else{
                     turn_player = jugadores->begin();
+                    qDebug() << "JUGADORES BEGIN WITHOUT CONDITION";
+                }
                 ignore = 0;
             }
 
@@ -151,11 +152,12 @@ void game::verifyStatus(){
                 ignore = 0;
             }
             ignore++;
-        }else if(!prestamo && jugadores->back()->getCartasSum() == 2 && (*jugadores->begin())->getCartasSum()   ==  2){
-            renewRound();
+        }else if(!prestamo && (*jugadores->begin())->getCardsCount() ==  2 && (jugadores)->back()->getCardsCount() == 2){
+                renewRound();
         }
+
         panel->changeBarajaValue(baraja.count());
-        qDebug() << "Baraja: " << baraja.count();
+        //qDebug() << "Baraja: " << baraja.count();
         break;
     }
     default:
