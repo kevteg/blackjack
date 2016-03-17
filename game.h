@@ -35,10 +35,12 @@ public:
     void renewRound();
     void setPlayersPoints(QVector<int> *ids, QVector<int> *points);
     void finishGame();
+    void desempateFinal();
 signals:
     void sendUnicast(int, int, QVector<QVariant>, int  var = 0);
     void sendMulticast(int, QVector<QVariant>);
     void goInit();
+
 
 public slots:
     void verifyStatus();

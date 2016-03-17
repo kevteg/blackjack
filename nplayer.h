@@ -28,6 +28,8 @@ public:
     void    setBonificacion(bool );
     int     getPuntos();
     void    setPuntos(int);
+    int     getDesempate();
+    void    setDesempate(int);
 
     void    addCard(carta new_card);
     void    isMe();
@@ -52,6 +54,7 @@ private:
     int x;
     int y;
     bool me;
+    int desempate;
 };
 
 #endif // NPLAYER_H

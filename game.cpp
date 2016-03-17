@@ -258,7 +258,7 @@ void game::sendCardToTurnPlayer(){
 
 void game::bonification(int id){
     //Luego de recibir la señal de bonificacion
-   if(round_count){
+   if(panel->getRondaValue()){
        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
            if((*jug)->getId()==id && ((*jug)->getPuntos())>0)
                (*jug)->setBonificacion(true);
@@ -317,6 +317,7 @@ void game::enviarRonda(){
 }
 void game::finishGame(){
     QVector<QVariant> vector;
+    desempateFinal();
     vector.append(panel->getRondaValue());
     vector.append(cartas_usadas.count());
     for(QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
@@ -325,6 +326,54 @@ void game::finishGame(){
     }
     vector.append(false);
     emit sendMulticast(protocolo::cod_final_juego, vector);
+
+}
+
+void game::desempateFinal(){
+    int high = 0;
+    QVector<nplayer*> des;
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+        if((*jug)->getPuntos() > high)
+            high = (*jug)->getPuntos();
+    qDebug()<<"Mayor: "<<high;
+    carta c_desempate = getRandomUsedCard();
+
+    int aux=0;
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+        if((*jug)->getPuntos() == high){
+            aux++;
+        }
+    qDebug()<<"Aux: "<<aux;
+    if(aux>1){
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
+            if((*jug)->getPuntos() == high){
+                c_desempate=getRandomUsedCard();
+                if(c_desempate.getValue() == -1)
+                    (*jug)->setDesempate(11);
+                else
+                    (*jug)->setDesempate(c_desempate.getValue());
+                des.append(*jug);
+                qDebug()<<"Carta Desempate: "<<c_desempate.getValue();
+            }
+        }
+         high=0;
+         for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
+              if((*jug)->getDesempate() > high)
+                  high=(*jug)->getDesempate();
+         }
+         qDebug()<<"Mayor desempate: "<<high;
+         aux=0;
+         for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+             if((*jug)->getDesempate() == high){
+                 aux++;
+             }
+         qDebug()<<"Aux desempate: "<<aux;
+         if(aux>1){
+             desempateFinal();
+         }
+         else
+             return;
+    }
 }
 void game::goInitInterface(){
     emit goInit();

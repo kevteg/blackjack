@@ -11,6 +11,7 @@ nplayer::nplayer(QWidget *parent) :
                          background: #2ecc71;}\
                          QLabel{color: white}");
     puntos = 0;
+    desempate = 0;
     x = 20;
     y = 20;
     me = false;
@@ -140,4 +141,11 @@ void nplayer::setPuntosNoSum(int puntos){
 void nplayer::setPuntos(int puntos){
     this->puntos += puntos;
     ui->puntos->setText("P: " + QString::number(this->puntos));
+}
+
+int nplayer::getDesempate(){
+    return desempate;
+}
+void nplayer::setDesempate(int desempate){
+    this->desempate = desempate;
 }
