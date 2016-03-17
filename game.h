@@ -10,6 +10,7 @@
 #include "protocolo.h"
 #include "image.h"
 #include "carta.h"
+#include "panel_estadisticas.h"
 class game : public QObject
 {
     Q_OBJECT
@@ -37,15 +38,18 @@ public:
 signals:
     void sendUnicast(int, int, QVector<QVariant>, int  var = 0);
     void sendMulticast(int, QVector<QVariant>);
+    void goInit();
 
 public slots:
     void verifyStatus();
+    void goInitInterface();
 private:
     int tipo_juego;
     int round_count;
     int turno;
     int status;
     int ignore;
+    panel_estadisticas *panel_es;
     QTimer *vertimer;
     panel_juego *panel;
     QVector<carta> baraja;

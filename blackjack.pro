@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     serveritem.cpp \
     nplayer.cpp \
     game.cpp \
-    carta.cpp
+    carta.cpp \
+    item_lista.cpp \
+    panel_estadisticas.cpp
 
 HEADERS  += blackmain.h \
     image.h \
@@ -44,7 +46,9 @@ HEADERS  += blackmain.h \
     serveritem.h \
     nplayer.h \
     game.h \
-    carta.h
+    carta.h \
+    item_lista.h \
+    panel_estadisticas.h
 
 FORMS    += blackmain.ui \
     interfaz_inicio.ui \
@@ -52,7 +56,9 @@ FORMS    += blackmain.ui \
     interfaz_cliente.ui \
     panel_juego.ui \
     serveritem.ui \
-    nplayer.ui
+    nplayer.ui \
+    item_lista.ui \
+    panel_estadisticas.ui
 QT       += network
 
 RESOURCES += \

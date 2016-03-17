@@ -303,7 +303,7 @@ void blackmain::tcpMessagesFromServer(QString data){
                 mySelf->setId(vector_datos->at(3).toInt());
                 mySelf->setName(inter_ini->getBarra()->toPlainText());
                 loadGameInterface();
-                com_udp->joinMulticast(dir_multicast);
+                com_udp->joinMulticast(direccion_multicast_ser);
                 //unir mySelf a la lista de vector
                 jugadores.append(mySelf);
             }else{
@@ -416,6 +416,7 @@ void blackmain::sendPresentation(){
     ngame = new game(game_as);
     connect(ngame, SIGNAL(sendMulticast(int,QVector<QVariant>)), this, SLOT(sendMulticast(int,QVector<QVariant>)));
     connect(ngame, SIGNAL(sendUnicast(int,int,QVector<QVariant>, int)), this, SLOT(sendUnicast(int,int, QVector<QVariant>, int)));
+    connect(ngame, SIGNAL(goInit()), this, SLOT(goInitInterface()));
     ngame->setPanel(panel_principal);
     ngame->setJugadores(&jugadores);
     ngame->beginGame();

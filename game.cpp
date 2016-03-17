@@ -41,7 +41,6 @@ void game::beginGame(){
         //ya pense
         //Bitacora de a yo
         beginner_player = jugadores->begin();
-
     }else{
 
     }
@@ -49,7 +48,14 @@ void game::beginGame(){
 
 void game::beginRound(){
     if(baraja.count() < 10){
-        //emit fin de juego
+        qDebug() << "Fin del juego";
+        finishGame();
+        panel_es = new panel_estadisticas(cartas_usadas.count(), panel->getRondaValue());
+        connect(panel_es, SIGNAL(goInit()), this, SLOT(goInitInterface()));
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++)
+            panel_es->addItem((*jug)->getName(), (*jug)->getPuntos());
+        panel_es->setParent(panel);
+        panel_es->move(panel->width() / 2 + panel_es->width() / 6, 20);
         status = protocolo::fin;
         vertimer->stop();
     }else{
@@ -310,5 +316,16 @@ void game::enviarRonda(){
     emit sendMulticast(protocolo::cod_comienzo_ronda, vector);
 }
 void game::finishGame(){
-
+    QVector<QVariant> vector;
+    vector.append(panel->getRondaValue());
+    vector.append(cartas_usadas.count());
+    for(QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
+        vector.append((*jug)->getId());
+        vector.append((*jug)->getPuntos());
+    }
+    vector.append(false);
+    emit sendMulticast(protocolo::cod_final_juego, vector);
+}
+void game::goInitInterface(){
+    emit goInit();
 }

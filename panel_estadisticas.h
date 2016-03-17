@@ -15,13 +15,17 @@ class panel_estadisticas : public QWidget
     Q_OBJECT
 
 public:
-    explicit panel_estadisticas(QWidget *parent = 0);
-    void setItems(QVector<nplayer *> *jugadores, int cartas, int rounds);
+    explicit panel_estadisticas(int cartas, int rounds, QWidget *parent = 0);
+    void addItem(QString name, int points);
     ~panel_estadisticas();
-
+public slots:
+    void botonPressed();
+signals:
+    void goInit();
 private:
     Ui::panel_estadisticas *ui;
     QVector<item_lista *> items;
+    int color;
 };
 
 #endif // PANEL_ESTADISTICAS_H

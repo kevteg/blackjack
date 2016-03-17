@@ -15,11 +15,15 @@ class item_lista : public QWidget
 
 public:
     explicit item_lista(QString name, int points, int desempate, int color, QWidget *parent = 0);
-    void set(QString name, int points, int desempate, int color);
+    void set();
     ~item_lista();
 
 private:
     Ui::item_lista *ui;
+    QString name;
+    int points;
+    int desempate;
+    int color;
 };
 
 #endif // ITEM_LISTA_H
