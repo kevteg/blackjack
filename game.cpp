@@ -7,10 +7,15 @@ game::game(int tipo_juego, QObject *parent) : QObject(parent), tipo_juego(tipo_j
     connect(vertimer, SIGNAL(timeout()), this, SLOT(verifyStatus()));
     round_count = 0;
     ignore = 0;
+    panel_es = new panel_estadisticas();
+    connect(panel_es, SIGNAL(goInit()), this, SLOT(goInitInterface()));
+    panel_es->setVisible(false);
 }
 
 void game::setPanel(panel_juego *panel){
     this->panel = panel;
+    panel_es->setParent(this->panel);
+    panel_es->move(panel->width() / 2, 20);
 }
 
 void game::setJugadores(QVector<nplayer*> *jugadores){
@@ -26,44 +31,26 @@ void game::setJugadores(QVector<nplayer*> *jugadores){
 }
 
 void game::beginGame(){
-//emit enviar comienzo de ronda
     llenarBaraja();
     if(tipo_juego == protocolo::servidor){
         status  = protocolo::comienzo_ronda;
         qDebug() << "Begin game";
         vertimer->start(protocolo::tiempo_inicio_ronda);
-        //beginner_player = jugadores->begin();
-        //Luego de que se inicia el timer con 30 segundos se inicia la ronda
-        //So... my beginner_player is going to change, but i need to know how many players are in the
-        //game and with that i will know... I know nothing -Jon Snow xoxo
-        //jugadores->count(); y tambien tengo el numero de la ronda con
-        //panel->getRondaValue(); ahora pensemos
-        //ya pense
-        //Bitacora de a yo
         beginner_player = jugadores->begin();
     }else{
 
     }
 }
 
-void game::beginRound(){
-    if(baraja.count() < 10){
-        qDebug() << "Fin del juego";
+bool game::beginRound(){
+    bool retorno = true;
+    if(baraja.count() < 90){
         finishGame();
-        panel_es = new panel_estadisticas(cartas_usadas.count(), panel->getRondaValue());
-        connect(panel_es, SIGNAL(goInit()), this, SLOT(goInitInterface()));
-        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++)
-            panel_es->addItem((*jug)->getName(), (*jug)->getPuntos());
-        panel_es->setParent(panel);
-        panel_es->move(panel->width() / 2 + panel_es->width() / 6, 20);
-        status = protocolo::fin;
-        vertimer->stop();
+        retorno = false;
     }else{
         qDebug() << "count: " << baraja.count();
         if(baraja.count() >= 10 && baraja.count() <= 25)
             prestamo = false;
-        }
-
         int ronda=panel->getRondaValue();
         qDebug() << "RONDA: "<< ronda;
         if(!ronda)
@@ -83,8 +70,11 @@ void game::beginRound(){
         }
         enviarRonda();
         turn_player = beginner_player;
+    }
 
+    return retorno;
 }
+
 void game::verifyStatus(){
     switch (status) {
     case protocolo::comienzo_ronda:{
@@ -92,10 +82,18 @@ void game::verifyStatus(){
         round_count = 0;
         qDebug() << "Time is up";
         prestamo = true;
-        beginRound();
         vertimer->stop();
-        vertimer->start(protocolo::tiempo_espera_carta);
-        panel->changeRondaValue();
+        if(beginRound()){
+            vertimer->start(protocolo::tiempo_espera_carta);
+            panel->changeRondaValue();
+        }else{
+            qDebug() << "Game over";
+            panel_es->setData(cartas_usadas.count(), panel->getRondaValue(), false);
+            for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++)
+                panel_es->addItem((*jug)->getName(), (*jug)->getPuntos(), /*(*jug)->getDesempate()*/0);
+            panel_es->setVisible(true);
+            status = protocolo::fin;
+        }
         break;
     }case protocolo::ronda:{
         if(!round_count){
@@ -321,6 +319,7 @@ void game::finishGame(){
     vector.append(panel->getRondaValue());
     vector.append(cartas_usadas.count());
     for(QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
+        qDebug() << "Id: " << (*jug)->getId() << ": " << (*jug)->getPuntos();
         vector.append((*jug)->getId());
         vector.append((*jug)->getPuntos());
     }
@@ -375,6 +374,22 @@ void game::desempateFinal(){
              return;
     }
 }
+void game::finishClientGame(int cards, int rounds, bool empate, QVector<int> *ids, QVector<int> *points){
+    qDebug() << "Game over " << ids->count();
+    panel_es->setData(cards, rounds, empate?"Si":"No");
+    for(int var = 0; var < ids->count(); var++){
+        bool out = false;
+        //qDebug() <<
+        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && !out; jug++)
+            if(ids->at(var) == (*jug)->getId()){
+                panel_es->addItem((*jug)->getName(), points->at(var), 0);
+                out = true;
+            }
+    }
+    panel_es->setVisible(true);
+    status = protocolo::fin;
+}
+
 void game::goInitInterface(){
     emit goInit();
 }

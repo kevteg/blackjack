@@ -24,7 +24,10 @@ void item_lista::set(){
                                     background: #ecf0f1;}");
     this->ui->name->setText(this->name);
     this->ui->points->setText(QString::number(this->points));
-    this->ui->desempate->setText(QString::number(this->desempate));
+    if(!this->desempate)
+        this->ui->desempate->setVisible(false);
+    else
+        this->ui->desempate->setText(QString::number(this->desempate));
 }
 
 item_lista::~item_lista()

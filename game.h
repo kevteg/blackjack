@@ -22,7 +22,7 @@ public:
     void llenarBaraja();
     carta getRandomCard();
     carta getRandomUsedCard();
-    void beginRound();
+    bool beginRound();
     void bonification(int);
     bool prestamo;
     void enviarRonda();
@@ -36,6 +36,8 @@ public:
     void setPlayersPoints(QVector<int> *ids, QVector<int> *points);
     void finishGame();
     void desempateFinal();
+    void finishClientGame(int cards, int rounds, bool empate, QVector<int> *ids, QVector<int> *points);
+
 signals:
     void sendUnicast(int, int, QVector<QVariant>, int  var = 0);
     void sendMulticast(int, QVector<QVariant>);

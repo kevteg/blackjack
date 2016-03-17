@@ -383,7 +383,27 @@ void blackmain::multicastData(QString data){
                 ngame->cardInfo(id, carta(carta_id));
             }
             break;
-        case protocolo::cod_final_juego:
+        case protocolo::cod_final_juego:{
+            if(current_state == protocolo::playing && game_as == protocolo::cliente){
+                int i = 0;
+                int rounds = vec_datos->at(1).toString().toInt();
+                int cards  = vec_datos->at(2).toString().toInt();
+                bool empate = vec_datos->at(3).toString() == "true"?true:false;
+
+                QVector<int> ids;
+                QVector<int> points;
+                for(int var = 4; var < vec_datos->count(); var++){
+                    qDebug() << vec_datos->at(var).toInt();
+                    if(i)
+                        points.append(vec_datos->at(var).toInt());
+                    else
+                        ids.append(vec_datos->at(var).toInt());
+                    i = !i?1:0;
+                }
+
+                ngame->finishClientGame(cards, rounds, empate, &ids, &points);
+            }
+        }
             break;
         case protocolo::cod_error:
             if(game_as == protocolo::cliente && current_state == protocolo::playing){

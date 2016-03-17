@@ -137,19 +137,23 @@ public:
                 QJsonObject arreglo_interno;
                 QJsonArray puntaje;
                 int i = 0;
-                for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
+                for(int _var = 2; _var < info->count(); _var++) {
                     for (int var = 0; var < arreglo_interno.count() && !i; ++var)
                         arreglo_interno.remove((!var)?"id":"puntaje");
                     if(!i)
-                        arreglo_interno["id"]  = variable->toString();
+                        arreglo_interno["id"]  = info->at(_var).toString();
                     else
-                        arreglo_interno["puntaje"] = variable->toInt();
+                        arreglo_interno["puntaje"] = QString::number(info->at(_var).toInt());
                     i++;
                     if(i == 2){
                         puntaje.append(arreglo_interno);
                         i = 0;
                     }
-                   }
+                }
+                /*for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
+
+                   }*/
+                info_s["puntaje"]           = puntaje;
                 info_s["cartas_jugadas"]    = QString::number(info->at(1).toInt());
                 info_s["desempate"]         = info->at(3).toBool()?"true":"false";
                 break;
@@ -241,6 +245,7 @@ public:
                  vector_datos->append(cod_final_juego);
                  vector_datos->append(trama.object()["rondas"].toString().toInt());
                  vector_datos->append(trama.object()["cartas_jugadas"].toString().toInt());
+                 vector_datos->append(QString::number((trama.object()["desempate"].toString() == "true")?true:false));
                  QJsonArray arreglo_interno;
                  arreglo_interno = trama.object()["puntaje"].toArray();
                  for(int var = 0; var < arreglo_interno.size(); var++){
@@ -252,7 +257,6 @@ public:
                            vector_datos->append(obj["puntaje"].toString().toInt());
                      }
                  }
-                 vector_datos->append(QString::number((trama.object()["desempate"].toString() == "true")?true:false));
                  break;
              }
              case cod_error:

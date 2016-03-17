@@ -15,8 +15,9 @@ class panel_estadisticas : public QWidget
     Q_OBJECT
 
 public:
-    explicit panel_estadisticas(int cartas, int rounds, QWidget *parent = 0);
-    void addItem(QString name, int points);
+    explicit panel_estadisticas(QWidget *parent = 0);
+    void addItem(QString name, int points, int desempate);
+    void setData(int cartas, int rounds, QString desempate);
     ~panel_estadisticas();
 public slots:
     void botonPressed();
