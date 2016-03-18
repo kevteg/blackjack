@@ -225,8 +225,8 @@ void blackmain::countServerTime(){
         this->inter_ser->updateTime(conteo_server);
         QVector <QVariant> var;
         var.append(inter_ini->getNombreUsuario());
-        var.append(conteo_server);
-        var.append(conteo_clientes);
+        var.append(120 - conteo_server);
+        var.append(4 - conteo_clientes);
         com_udp->enviaUnicoBroadcast(protocolo::generateJson(protocolo::cod_saludo, &var));
     }
 }

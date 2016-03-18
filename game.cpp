@@ -45,7 +45,7 @@ void game::beginGame(){
 
 bool game::beginRound(){
     bool retorno = true;
-    if(baraja.count() < 90){
+    if(baraja.count() < 10){
         finishGame();
         retorno = false;
     }else{

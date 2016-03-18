@@ -22,7 +22,7 @@ public:
     void llenarBaraja();
     carta getRandomCard();
     carta getRandomUsedCard();
-    void beginRound();
+    bool beginRound();
     void bonification(int socketDes);
     bool prestamo;
     void enviarRonda();
