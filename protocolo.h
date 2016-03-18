@@ -134,10 +134,12 @@ public:
             case cod_final_juego:{
                 info_s["codigo"]            = cod_final_juego;
                 info_s["rondas"]            = QString::number(info->at(0).toInt());
+                info_s["cartas_jugadas"]    = QString::number(info->at(1).toInt());
+                info_s["desempate"]         = info->at(2).toBool()?"true":"false";
                 QJsonObject arreglo_interno;
                 QJsonArray puntaje;
                 int i = 0;
-                for(int _var = 2; _var < info->count(); _var++) {
+                for(int _var = 3; _var < info->count(); _var++) {
                     for (int var = 0; var < arreglo_interno.count() && !i; ++var)
                         arreglo_interno.remove((!var)?"id":"puntaje");
                     if(!i)
@@ -150,12 +152,7 @@ public:
                         i = 0;
                     }
                 }
-                /*for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
-
-                   }*/
                 info_s["puntaje"]           = puntaje;
-                info_s["cartas_jugadas"]    = QString::number(info->at(1).toInt());
-                info_s["desempate"]         = info->at(3).toBool()?"true":"false";
                 break;
             }
             case cod_error:

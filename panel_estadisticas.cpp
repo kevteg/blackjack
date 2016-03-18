@@ -21,12 +21,16 @@ void panel_estadisticas::addItem(QString name, int points, int desempate){
     this->color = (this->color == protocolo::gray)?protocolo::white:protocolo::gray;
 }
 
-void panel_estadisticas::setData(int cartas, int rounds, QString desempate){
-    this->ui->cartas->setText("Cartas usadas: " + QString::number(cartas));
+void panel_estadisticas::setData(int cartas, int rounds, bool desempate){
+    this->ui->cartas->setText("Cartas usadas: "  + QString::number(cartas));
     this->ui->rounds->setText("Rounds jugados: " + QString::number(rounds));
-    this->ui->desempate->setText("Desempate: " + desempate);
-    if(desempate == "No")
+    if(desempate)
+        this->ui->desempate->setText("Desempate: Si");
+    else{
+        this->ui->desempate->setText("Desempate: No");
         this->ui->label_desempate->setVisible(false);
+    }
+
 }
 
 void panel_estadisticas::botonPressed(){

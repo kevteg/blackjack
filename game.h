@@ -35,7 +35,7 @@ public:
     void renewRound();
     void setPlayersPoints(QVector<int> *ids, QVector<int> *points);
     void finishGame();
-    void desempateFinal();
+    bool desempateFinal();
     void finishClientGame(int cards, int rounds, bool empate, QVector<int> *ids, QVector<int> *points);
 
 signals:
@@ -61,6 +61,7 @@ private:
     QVector<nplayer*> *jugadores;
     QVector <nplayer*>::iterator turn_player;
     QVector <nplayer*>::iterator beginner_player;
+    bool empate;
 };
 
 #endif // GAME_H

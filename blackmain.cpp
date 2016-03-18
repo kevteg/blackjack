@@ -218,7 +218,7 @@ void blackmain::loadGameInterface(){
 }
 
 void blackmain::countServerTime(){
-    if(conteo_server >= protocolo::max_time ||  conteo_clientes >= protocolo::max_players){
+    if(conteo_server >= protocolo::max_time || conteo_clientes >= protocolo::max_players){
         loadGameInterface();
     }else{
         conteo_server++;
@@ -359,6 +359,7 @@ void blackmain::multicastData(QString data){
                 ngame = new game(game_as);
                 connect(ngame, SIGNAL(sendMulticast(int,QVector<QVariant>)), this, SLOT(sendMulticast(int,QVector<QVariant>)));
                 connect(ngame, SIGNAL(sendUnicast(int,int,QVector<QVariant>, int)), this, SLOT(sendUnicast(int,int, QVector<QVariant>, int)));
+                connect(ngame, SIGNAL(goInit()), this, SLOT(goInitInterface()));
                 ngame->setPanel(panel_principal);
                 ngame->setJugadores(&jugadores);
                 current_state = protocolo::playing;
@@ -399,14 +400,13 @@ void blackmain::multicastData(QString data){
                 QVector<int> ids;
                 QVector<int> points;
                 for(int var = 4; var < vec_datos->count(); var++){
-                    qDebug() << vec_datos->at(var).toInt();
                     if(i)
                         points.append(vec_datos->at(var).toInt());
                     else
                         ids.append(vec_datos->at(var).toInt());
                     i = !i?1:0;
                 }
-
+                ngame->setPlayersPoints(&ids, &points);
                 ngame->finishClientGame(cards, rounds, empate, &ids, &points);
             }
         }

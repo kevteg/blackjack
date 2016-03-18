@@ -5,14 +5,14 @@ item_lista::item_lista(QString name, int points, int desempate, int color, QWidg
     QWidget(parent),
     ui(new Ui::item_lista)
 {
-    this->setStyleSheet("QGroupBox{border: none;\
-                                   height: 30px;}\
+    this->setStyleSheet("QGroupBox{border: none;}\
                              QLabel{color: #34495e;}");
     ui->setupUi(this);
     this->name = name;
     this->points = points;
     this->desempate = desempate;
     this->color = color;
+    //this->resize(80, this->height());
     set();
 }
 void item_lista::set(){

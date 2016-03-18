@@ -7,15 +7,16 @@ game::game(int tipo_juego, QObject *parent) : QObject(parent), tipo_juego(tipo_j
     connect(vertimer, SIGNAL(timeout()), this, SLOT(verifyStatus()));
     round_count = 0;
     ignore = 0;
-    panel_es = new panel_estadisticas();
-    connect(panel_es, SIGNAL(goInit()), this, SLOT(goInitInterface()));
-    panel_es->setVisible(false);
+    empate = false;
 }
 
 void game::setPanel(panel_juego *panel){
     this->panel = panel;
+    panel_es = new panel_estadisticas();
+    connect(panel_es, SIGNAL(goInit()), this, SLOT(goInitInterface()));
+    panel_es->setVisible(false);
     panel_es->setParent(this->panel);
-    panel_es->move(panel->width() / 2, 20);
+    panel_es->move(338, 20);
 }
 
 void game::setJugadores(QVector<nplayer*> *jugadores){
@@ -86,9 +87,9 @@ void game::verifyStatus(){
             panel->changeRondaValue();
         }else{
             qDebug() << "Game over";
-            panel_es->setData(cartas_usadas.count(), panel->getRondaValue(), false);
+            panel_es->setData(cartas_usadas.count(), panel->getRondaValue(), empate);
             for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++)
-                panel_es->addItem((*jug)->getName(), (*jug)->getPuntos(), /*(*jug)->getDesempate()*/0);
+                panel_es->addItem((*jug)->getName(), (*jug)->getPuntos(), (*jug)->getDesempate());
             panel_es->setVisible(true);
             status = protocolo::fin;
         }
@@ -319,21 +320,23 @@ void game::enviarRonda(){
 }
 void game::finishGame(){
     QVector<QVariant> vector;
-    desempateFinal();
+    empate = desempateFinal();
     vector.append(panel->getRondaValue());
     vector.append(cartas_usadas.count());
+    vector.append(empate);
     for(QVector <nplayer*>::iterator jug = jugadores->begin(); jug != jugadores->end(); jug++) {
         qDebug() << "Id: " << (*jug)->getId() << ": " << (*jug)->getPuntos();
         vector.append((*jug)->getId());
         vector.append((*jug)->getPuntos());
     }
-    vector.append(false);
+
     emit sendMulticast(protocolo::cod_final_juego, vector);
 
 }
 
-void game::desempateFinal(){
+bool game::desempateFinal(){
     int high = 0;
+    bool empt = false;
     QVector<nplayer*> des;
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
         if((*jug)->getPuntos() > high)
@@ -348,6 +351,7 @@ void game::desempateFinal(){
         }
     qDebug()<<"Aux: "<<aux;
     if(aux>1){
+        empt = true;
         for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
             if((*jug)->getPuntos() == high){
                 c_desempate=getRandomUsedCard();
@@ -375,15 +379,15 @@ void game::desempateFinal(){
              desempateFinal();
          }
          else
-             return;
+             return false;
     }
+    return empt;
 }
 void game::finishClientGame(int cards, int rounds, bool empate, QVector<int> *ids, QVector<int> *points){
     qDebug() << "Game over " << ids->count();
-    panel_es->setData(cards, rounds, empate?"Si":"No");
+    panel_es->setData(cards, rounds, empate);
     for(int var = 0; var < ids->count(); var++){
         bool out = false;
-        //qDebug() <<
         for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && !out; jug++)
             if(ids->at(var) == (*jug)->getId()){
                 panel_es->addItem((*jug)->getName(), points->at(var), 0);

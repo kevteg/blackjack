@@ -3,6 +3,7 @@
 Network::server::server(QObject *parent) : QTcpServer(parent){
 
 }
+
 bool Network::server::startServer(QHostAddress adds, int port){
     bool started = true;
     if(!this->listen(adds, port)){
