@@ -261,6 +261,12 @@ void blackmain::tcpMessagesFromCLient(int socket_des, QString data){
             if(current_state == protocolo::playing)
                 ngame->cardReply(socket_des, vector_datos->at(1).toBool());
             break;
+        case protocolo::cod_bono:
+            if(current_state == protocolo::comienzo_ronda && vector_datos->at(1).toBool()==true){
+                ngame->bonification(socket_des);
+                qDebug()<<"Pidio Bono: "<< vector_datos->at(0).toInt();
+            }
+            break;
         default:
             break;
         }

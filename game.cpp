@@ -59,8 +59,6 @@ bool game::beginRound(){
             while(ronda >= jugadores->count()){
                 ronda -= (jugadores->count()-1);
             }
-            //Tengo que recorrer el vector de jugadores
-            //Los id empiezan en 1 i think
             for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
                 if((*jug)->getId()  ==  ronda+1)
                     beginner_player =   jug;
@@ -112,8 +110,6 @@ void game::verifyStatus(){
                     round_count++;
                 }
                 turn_player = jugadores->begin();  //ESTE NO ES
-             //   if((*jugadores->begin())->getCardsCount() == 2 && (*beginner_player)->getCardsCount() == 2 && round_count)
-               //     turn_player=beginner_player;
             }
         }else if(prestamo){
             //Ignore se usa por si un cliente no responde la solicitud después de 2 veces
@@ -129,7 +125,6 @@ void game::verifyStatus(){
                     turn_player++;
                 else{
                     turn_player = jugadores->begin();
-                    qDebug() << "JUGADORES BEGIN WITHOUT CONDITION";
                 }
                 ignore = 0;
             }
@@ -182,13 +177,17 @@ void game::verifyStatus(){
         for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
             if((*jug)->getCartasSum() == high)
                 (*jug)->setPuntos(1);
+            else if((*jug)->getCartasSum()<21 && (*jug)->getBonificacion())
+                 (*jug)->setPuntos(-1);
 
     }
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
         qDebug() << "Sumatoria de cartas: " << (*jug)->getCartasSum() << "Puntos: " << (*jug)->getPuntos();
     }
-    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
+    for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
         (*jug)->resetCards();
+        (*jug)->setBonificacion(false);
+    }
      status = protocolo::comienzo_ronda;
      vertimer->stop();
      vertimer->start(protocolo::tiempo_inicio_ronda);
@@ -222,7 +221,13 @@ void game::cardOffering(){
     //AQUI es donde va la estrategia del cliente. Cuando le ofrecen carta al cliente este es el método que lo recibe
     //Se debe ver si se pedira bono y eso
     //La estrategia a continuación es por motivos de prueba
+
     QVector<QVariant> data;
+   if(protocolo::comienzo_ronda && tipo_juego == protocolo::cliente){
+        //data.append(*this->jugadores->getId());
+        data.append(true);
+        emit sendUnicast(tipo_juego, protocolo::cod_bono, data);
+    }
     if((*this->jugadores->begin())->getCartasSum() < 17){
         data.append(true);
     }else{
@@ -232,7 +237,7 @@ void game::cardOffering(){
 }
 
 void game::cardReply(int socket_des, bool resp){
-    //AQUI el servidor recibe la respuesta del cliente, si quiere o no carta
+    //AQUI el servidor recibe la respuesta del cliente, si quiere o n1  o carta
     ignore = 0;
     if(socket_des == (*turn_player)->getSocketDes()){
         if(resp){
@@ -254,11 +259,10 @@ void game::sendCardToTurnPlayer(){
     (*turn_player)->addCard(new_card);
 }
 
-void game::bonification(int id){
-    //Luego de recibir la señal de bonificacion
+void game::bonification(int socketDes){
    if(panel->getRondaValue()){
        for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end() && panel; jug++){
-           if((*jug)->getId()==id && ((*jug)->getPuntos())>0)
+           if((*jug)->getSocketDes()==socketDes && ((*jug)->getPuntos())>0)
                (*jug)->setBonificacion(true);
        }
    }

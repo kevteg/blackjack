@@ -22,8 +22,8 @@ public:
     void llenarBaraja();
     carta getRandomCard();
     carta getRandomUsedCard();
-    bool beginRound();
-    void bonification(int);
+    void beginRound();
+    void bonification(int socketDes);
     bool prestamo;
     void enviarRonda();
     void cardInfo(int id, carta card);

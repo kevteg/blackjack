@@ -113,6 +113,9 @@ int nplayer::sumUpPoints(){
                     (((*cartas.begin()).getNumValue() == 2 && cartas.back().getNumValue() == 1)
                      || (cartas.back().getNumValue() == 2 && (*cartas.begin()).getNumValue() == 1)))
                 puntos = 2;
+        if(this->bonificacion){
+            puntos = 4;
+        }
         puntajes.append(puntos);
         this->puntos += puntos;
     }
