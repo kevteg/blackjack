@@ -198,7 +198,7 @@ public:
                          if(!i)
                            vector_datos->append(obj["nombre"].toString());
                          else
-                           vector_datos->append(obj["id"].toInt());
+                           vector_datos->append((!obj["id"].toInt())?(obj["id"].toString().toInt()):(obj["id"].toInt()));
                      }
                  }
                  break;
@@ -211,9 +211,9 @@ public:
                      QJsonObject obj = arreglo_interno[var].toObject();
                      for(int i = 0; i < obj.size(); i++){
                          if(!i)
-                           vector_datos->append(obj["id"].toInt());
+                           vector_datos->append((!obj["id"].toInt())?(obj["id"].toString().toInt()):(obj["id"].toInt()));
                          else
-                           vector_datos->append(obj["puntaje"].toInt());
+                           vector_datos->append((!obj["puntaje"].toInt())?(obj["puntaje"].toString().toInt()):(obj["puntaje"].toInt()));
                      }
                  }
                  break;
@@ -249,9 +249,10 @@ public:
                      QJsonObject obj = arreglo_interno[var].toObject();
                      for(int i = 0; i < obj.size(); i++){
                          if(!i)
-                           vector_datos->append(obj["id"].toInt());
+                             //(!trama.object()["id"].toInt())?(trama.object()["id"].toString().toInt()):(trama.object()["id"].toInt())
+                           vector_datos->append((!obj["id"].toInt())?(obj["id"].toString().toInt()):(obj["id"].toInt()));
                          else
-                           vector_datos->append(obj["puntaje"].toInt());
+                           vector_datos->append((!obj["puntaje"].toInt())?(obj["puntaje"].toString().toInt()):(obj["puntaje"].toInt()));
                      }
                  }
                  break;

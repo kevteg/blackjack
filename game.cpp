@@ -255,7 +255,7 @@ void game::sendCardToTurnPlayer(){
     QVector<QVariant> data;
     data.append((*turn_player)->getId());
     carta new_card = getRandomCard();
-    data.append(new_card.getNombre());
+    data.append(new_card.getNombre().toLower());
     emit sendMulticast(protocolo::cod_envio_carta, data);
     (*turn_player)->addCard(new_card);
 }
