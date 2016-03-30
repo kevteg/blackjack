@@ -387,7 +387,7 @@ void blackmain::multicastData(QString data){
             if(game_as == protocolo::cliente){
                 int id = vec_datos->at(1).toInt();
                 QString carta_id = vec_datos->at(2).toString();
-                ngame->cardInfo(id, carta(carta_id));
+                ngame->cardInfo(id, carta(carta_id.toLower()));
             }
             break;
         case protocolo::cod_final_juego:{

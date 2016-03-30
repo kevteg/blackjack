@@ -77,11 +77,11 @@ public:
                 QJsonObject arreglo_interno;
                 for(QVector <QVariant>::iterator variable = info->begin(); variable != info->end(); variable++){
                     for (int var = 0; var < arreglo_interno.count() && !i; ++var)
-                        arreglo_interno.remove((!var)?"nombre":"id_asignado");
+                        arreglo_interno.remove((!var)?"nombre":"id");
                     if(!i)
                         arreglo_interno["nombre"] = variable->toString();
                     else
-                        arreglo_interno["id_asignado"] = variable->toInt();//QString::number(variable->toInt());
+                        arreglo_interno["id"] = variable->toInt();//QString::number(variable->toInt());
                     i++;
                     if(i == 2){
                         jugadores.append(arreglo_interno);
@@ -119,7 +119,7 @@ public:
                 break;
             case cod_ofrecer_carta:
                 info_s["codigo"]      = cod_ofrecer_carta;
-                info_s["id"]          = info->at(0).toBool();//QString::number(info->at(0).toInt());
+                info_s["id"]          = info->at(0).toInt();//QString::number(info->at(0).toInt());
                 break;
             case cod_respuesta_carta:
                 info_s["codigo"]      = cod_respuesta_carta;
@@ -198,7 +198,7 @@ public:
                          if(!i)
                            vector_datos->append(obj["nombre"].toString());
                          else
-                           vector_datos->append(obj["id_asignado"].toInt());
+                           vector_datos->append(obj["id"].toInt());
                      }
                  }
                  break;
