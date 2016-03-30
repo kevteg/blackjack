@@ -393,9 +393,9 @@ void blackmain::multicastData(QString data){
         case protocolo::cod_final_juego:{
             if(current_state == protocolo::playing && game_as == protocolo::cliente){
                 int i = 0;
-                int rounds = vec_datos->at(1).toString().toInt();
-                int cards  = vec_datos->at(2).toString().toInt();
-                bool empate = vec_datos->at(3).toString() == "true"?true:false;
+                int rounds = vec_datos->at(1).toInt();
+                int cards  = vec_datos->at(2).toInt();
+                bool empate = vec_datos->at(3).toBool();
 
                 QVector<int> ids;
                 QVector<int> points;

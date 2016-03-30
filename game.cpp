@@ -215,7 +215,7 @@ carta game::getRandomCard(){
 }
 
 carta game::getRandomUsedCard(){
-    carta carta_nueva = baraja.at(qrand() % (baraja.count() + 1));
+    carta carta_nueva = cartas_usadas.at(qrand() % (cartas_usadas.count()));
     return carta_nueva;
 }
 void game::cardOffering(){
@@ -287,12 +287,19 @@ void game::cardInfo(int id, carta card){
 
 void game::setPlayersPoints(QVector<int> *ids, QVector<int> *points){
     int i = 0;
+    /*qDebug() << "Puntos:       " ;
+    for (int var = 0; var < ids->count(); ++var) {
+        qDebug() << ids->at(var) << ": " << points->at(var);
+    }*/
     if(ids->count() && points->count())
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++){
-        if(i < ids->count() && i < points->count())
-            if((*jug)->getId() == ids->at(i))
-                (*jug)->setPuntosNoSum(points->at(i++));
-        (*jug)->resetCards();
+        bool v = true;
+        for (int var = 0; var < ids->count() && v; var++)
+            if(ids->at(var) == (*jug)->getId()){
+                (*jug)->setPuntosNoSum(points->at(var));
+                v = false;
+                (*jug)->resetCards();
+            }
     }
     panel->changeRondaValue();
 }
@@ -329,9 +336,7 @@ void game::finishGame(){
         vector.append((*jug)->getId());
         vector.append((*jug)->getPuntos());
     }
-
     emit sendMulticast(protocolo::cod_final_juego, vector);
-
 }
 
 bool game::desempateFinal(){
