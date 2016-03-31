@@ -45,7 +45,7 @@ void game::beginGame(){
 
 bool game::beginRound(){
     bool retorno = true;
-    if(baraja.count() < 90){
+    if(baraja.count() < 10){
         finishGame();
         retorno = false;
     }else{
@@ -80,6 +80,11 @@ void game::verifyStatus(){
         status = protocolo::ronda;
         round_count = 0;
         qDebug() << "Time is up";
+     /*    QVector<QVariant> data;
+        if(tipo_juego == protocolo::cliente){
+             data.append(true);
+             emit sendUnicast(tipo_juego, protocolo::cod_bono, data);
+         }*/
         prestamo = true;
         vertimer->stop();
         if(beginRound()){
@@ -224,11 +229,6 @@ void game::cardOffering(){
     //La estrategia a continuación es por motivos de prueba
 
     QVector<QVariant> data;
-   if(protocolo::comienzo_ronda && tipo_juego == protocolo::cliente){
-        //data.append(*this->jugadores->getId());
-        data.append(true);
-        emit sendUnicast(tipo_juego, protocolo::cod_bono, data);
-    }
     if((*this->jugadores->begin())->getCartasSum() < 17){
         data.append(true);
     }else{
