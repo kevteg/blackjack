@@ -61,6 +61,7 @@ private:
     QVector<nplayer*> *jugadores;
     QVector <nplayer*>::iterator turn_player;
     QVector <nplayer*>::iterator beginner_player;
+    QVector<nplayer*> des;
     bool empate;
 };
 

@@ -45,7 +45,7 @@ void game::beginGame(){
 
 bool game::beginRound(){
     bool retorno = true;
-    if(baraja.count() < 10){
+    if(baraja.count() < 90){
         finishGame();
         retorno = false;
     }else{
@@ -341,15 +341,14 @@ void game::finishGame(){
 
 bool game::desempateFinal(){
     int high = 0;
+    int aux=0;
     bool empt = false;
-    QVector<nplayer*> des;
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
         if((*jug)->getPuntos() > high)
             high = (*jug)->getPuntos();
     qDebug()<<"Mayor: "<<high;
     carta c_desempate = getRandomUsedCard();
 
-    int aux=0;
     for(QVector <nplayer*>::iterator jug = this->jugadores->begin(); jug != this->jugadores->end(); jug++)
         if((*jug)->getPuntos() == high){
             aux++;
@@ -381,6 +380,7 @@ bool game::desempateFinal(){
              }
          qDebug()<<"Aux desempate: "<<aux;
          if(aux>1){
+             des.clear();
              desempateFinal();
          }
          else
